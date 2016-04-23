@@ -4,7 +4,8 @@
 create table User (
     `id` int primary key auto_increment,
     `username` varchar(30),
-    `email` varchar(30)
+    `email` varchar(30),
+    `phone` varchar(12), 
 
 
 create table Driver (
