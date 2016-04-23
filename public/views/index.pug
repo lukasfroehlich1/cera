@@ -1,0 +1,40 @@
+doctype html
+html(lang="en")
+    include ./head.pug
+    body
+        .container
+            h1 CERA
+            ul(class="nav nav-tabs")
+                li.active(role="presentation")
+                    a(href="#") Driver
+                li(role="presentation")
+                    a(href="#") Rider
+            br
+            #driverForm
+                form.col.s12
+                    .row
+                        .input-field.col.s12
+                            input(
+                                placeholder="start",
+                                id="start_location",
+                                type="text",
+                                class="validate")
+                            label(for="start_location") Start Location
+                    .row
+                        .input-field.col.s12
+                            input(
+                                placeholder="end",
+                                id="end_location",
+                                type="text",
+                                class="validate")
+                            label(for="end_location") End Location
+                    .row
+                        .input-field.col.s12
+                            input.datepicker(
+                                type="date",
+                                id="departure_date"
+                            )
+                            label(for="departure_date") Departure Date
+            #riderForm
+        
+
