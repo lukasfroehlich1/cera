@@ -1,0 +1,26 @@
+{
+  "name": "cera",
+  "version": "1.0.0",
+  "description": "ride sharing application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lukasfroehlich1/cera.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lukasfroehlich1/cera/issues"
+  },
+  "homepage": "https://github.com/lukasfroehlich1/cera",
+  "dependencies": {
+    "cookie-parser": "^1.4.1",
+    "csurf": "^1.8.3",
+    "express": "^4.13.4",
+    "forms": "^1.1.4",
+    "pug": "^2.0.0-alpha6"
+  }
+}
