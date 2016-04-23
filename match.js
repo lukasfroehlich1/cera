@@ -12,16 +12,17 @@ var gmAPI = new GoogleMapsAPI(publicConfig);
 
 
 find_match = function() { // drivers, riders) {
-    gmAPI.directions({origin: "UCSB", destination: "SF"}, function(err, results) {
+    gmAPI.directions({origin: "UCSD", destination: "SF", waypoints: "optimize:true|37.422, -122.084|36.5041, -121.9316"}, function(err, results) {
         if (err) {
             console.log('Error' + err);
         }
         else if (results['status'] == 'NOT_FOUND')
 		{
 			console.log("Location not found");
-			return res.status("404").send("Not found");
+			return results.status("404").send("Not found");
 		}
         else {
+            console.log(results);
             console.log(results.routes[0].legs[0].duration.value);
         }
 	});
