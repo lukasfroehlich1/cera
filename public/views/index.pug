@@ -6,153 +6,39 @@ html(lang="en")
             h1 CERA
             ul(class="nav nav-tabs")
                 li#driverTab.active(role="presentation")
-                    a(href="#driverForm", data-toggle="tab", name="#riderForm") Driver
+                    a(href="#driverForm", data-toggle="tab", other1="#riderForm", other2="#prev_reqs") Add Drive Form
                 li#riderTab(role="presentation")
-                    a(href="#riderForm", data-toggle="tab", name="#driverForm") Rider
+                    a(href="#riderForm", data-toggle="tab", other1="#driverForm", other2="#prev_reqs") Request Ride Form
+                li#prev_req_tab(role="presentation")
+                    a(href="#prev_reqs", data-toggle="tab", other1="#riderForm", other2="#driverForm") Previous Queries
             br
+            span#userID(style="display:none") #{pageContent.userId}
             #driverForm
-                form.col.s6(onsubmit="driver_submit()")
-                    .row
-                        .input-field.col.s2
-                            input#loc_ucsd(
-                                name="driver_start_locs",
-                                type="radio",
-                                value="1"
-                            )
-                            label(for="loc_ucsd") UCSD
-                            label.active Start Location
-                        .input-field.col.s2
-                            input#loc_ucsb(
-                                name="driver_start_locs",
-                                type="radio",
-                                value="2"
-                            )
-                            label(for="loc_ucsb") UCSB
-
-                        .input-field.col.s2
-                            input#loc_slo(
-                                name="driver_start_locs",
-                                type="radio",
-                                value="3"
-                            )
-                            label(for="loc_slo") CalPoly SLO
-                    .row
-                        .input-field.col.s6
-                            input(
-                                placeholder="end",
-                                id="driver_endpoint",
-                                type="text",
-                                class="validate")
-                            label(for="end_location") End Location
-                    .row
-                        .input-field.col.s2
-                            input.datepicker(
-                                type="date",
-                                id="driver_departure_date"
-                            )
-                            label(for="departure_date") Departure Date
-                        .input-field.col.s2
-                            input(
-                                type="time",
-                                id="driver_leave_earliest"
-                            )
-                            label.active Earliest Departure Time
-                        .input-field.col.s2
-                            input(
-                                type="time",
-                                id="driver_leave_latest"
-                            )
-                            label.active Latest Departure Time
-                    .row
-                        .input-field.col.s2
-                            input(
-                                type="text",
-                                placeholder="4",
-                                id="driver_seats",
-                                class="validate"
-                            )
-                            label(for="driver_seats") Seats Open
-                        .input-field.col.s2
-                            input(
-                                type="text",
-                                placeholder="20",
-                                id="driver_price_seat",
-                                value="$"
-                            )
-                            label(for="price_seat") Price per Seat
-                        .input-field.col.s2
-                            input(
-                                type="text",
-                                placeholder="20",
-                                id="driver_threshold"
-                            )
-                            label(for="threshold") Max alloted detour time
-                    .row
-                        .input-field.col.s6.right-align
-                            button.btn.waves-effect.waves-light(
-                                type="submit",
-                                name="action"
-                            ) Submit
-                                i.material-icons.right send
-
+                include ./driverForm.pug
             #riderForm(style="display:none")
-                form.col.s6(onsubmit="rider_submit()")
-                    .row
-                        .input-field.col.s2
-                            input#loc_ucsd(
-                                name="rider_start_locs",
-                                type="radio",
-                                value="1"
-                            )
-                            label(for="loc_ucsd") UCSD
-                            label.active Start Location
-                        .input-field.col.s2
-                            input#loc_ucsb(
-                                name="rider_start_locs",
-                                type="radio",
-                                value="2"
-                            )
-                            label(for="loc_ucsb") UCSB
-
-                        .input-field.col.s2
-                            input#loc_slo(
-                                name="rider_start_locs",
-                                type="radio",
-                                value="3"
-                            )
-                            label(for="loc_slo") CalPoly SLO
-                    .row
-                        .input-field.col.s6
-                            input(
-                                placeholder="end",
-                                id="rider_endpoint",
-                                type="text",
-                                class="validate")
-                            label(for="end_location") End Location
-                    .row
-                        .input-field.col.s2
-                            input.datepicker(
-                                type="date",
-                                id="rider_departure_date"
-                            )
-                            label(for="departure_date") Departure Date
-                        .input-field.col.s2
-                            input(
-                                type="time",
-                                id="rider_leave_earliest"
-                            )
-                            label.active Earliest Departure Time
-                        .input-field.col.s2
-                            input(
-                                type="time",
-                                id="rider_leave_latest"
-                            )
-                            label.active Latest Departure Time
-                    .row
-                        .input-field.col.s6.right-align
-                            button.btn.waves-effect.waves-light(
-                                type="submit",
-                                name="action"
-                            ) Submit
-                                i.material-icons.right send
-
+                include ./riderForm.pug
+            #prev_reqs(style="display:none")
+                ul.collection.with-header
+                    li.collection-header
+                        h4 Drives Added
+                    if pageContent.drivers.length == 0
+                        li.collection-item None
+                    each val in pageContent.drivers
+                        if val.startId == 1
+                            li.collection-item(id=val.id)= "UCSD-->" + val.end_points + "   " + val.leave_date
+                        else if val.startId == 2
+                            li.collection-item(id=val.id)= "UCSB-->" + val.end_points + "   " + val.leave_date
+                        else if val.startId == 3
+                            li.collection-item(id=val.id)= "CalPoly SLO-->" + val.end_points + "   " + val.leave_date
+                ul.collection.with-header
+                    li.collection-header
+                        h4 Rides Requested
+                    if pageContent.riders.length == 0
+                        li.collection-item None
+                    each val in pageContent.riders
+                        if val.startId == 1
+                            li.collection-item(id=val.id)= "UCSD-->" + val.end_points + "   " + val.leave_date
+                        else if val.startId == 2
+                            li.collection-item(id=val.id)= "UCSB-->" + val.end_points + "   " + val.leave_date
+                        else if val.startId == 3
+                            li.collection-item(id=val.id)= "CalPoly SLO-->" + val.end_points + "   " + val.leave_date

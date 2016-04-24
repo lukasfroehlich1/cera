@@ -1,0 +1,22 @@
+.card.blue-grey.darken-1
+    .card-content.white-text.center-align
+        span.card-title
+            h5 Driver Information
+        .row.left-align
+            .col.s3 Name
+            .col.s3 Michael Cera
+            .col.s3 Contact Information
+            .col.s3 Emails
+        .row.left-align
+            .col.s3 Departure Time
+            .col.s3 4/20/16 4:00pm - 8:00pm
+            .col.s3 Price
+            .col.s3 $50
+        .row
+            .col.s12
+                h5 Map
+                #map(style="width:600px; height:400px; margin-left: auto; margin-right: auto;")
+                    script(src="/js/map_scripts.js")
+                    script(async, defer, src='https://maps.googleapis.com/maps/api/js?key=AIzaSyA3OTxTo2wghKepaGkULcVk9POnY_CyI38&callback=initMap', type="text/javascript")
+    .card-action.center-align
+        a.waves-effect.waves-light.btn Request 

@@ -1,0 +1,12 @@
+doctype html
+html(lang="en")
+    include ./head.pug  
+    body
+        .container
+            .row
+                .col.s4
+                    ul.collection.with-header
+                        li.collection-header
+                            h3 Matches
+                .col.s8
+                    include ./match_card.pug

@@ -1,0 +1,35 @@
+doctype html
+html(lang="en")
+    include ./head.pug  
+    body
+        #login-card.card
+            .card-content.center-align
+                span.card-title Cera 
+                .input-field
+                    input#username(
+                        type="text",
+                        placeholder="username"
+                    )
+                    label(for="username") Username
+                .input-field
+                    input#password(
+                        type="text",
+                        placeholder="password"
+                    )
+                    label(for="password") Password
+                .hidden_field.input-field(style="display:none")
+                    input#email(
+                        type="text",
+                        placeholder="email",
+                    )
+                    label(for="email") Email
+                .hidden_field.input-field(style="display:none")
+                    input#phone(
+                        type="text",
+                        placeholder="phone"
+                    )
+                    label(for="phone") Phone
+            .card-action
+                a#login_button.waves-effect.waves-light.btn.right Login
+                a#register_button.waves-effect.waves-light.btn(style="display:none") Register
+                a#initiate_register_button.waves-effect.waves-light.btn New here? 

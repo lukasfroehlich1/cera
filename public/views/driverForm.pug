@@ -1,0 +1,82 @@
+.col.s6
+    .row
+        .input-field.col.s2
+            input#loc_ucsd(
+                name="driver_start_locs",
+                type="radio",
+                value="1"
+            )
+            label(for="loc_ucsd") UCSD
+            label.active Start Location
+        .input-field.col.s2
+            input#loc_ucsb(
+                name="driver_start_locs",
+                type="radio",
+                value="2"
+            )
+            label(for="loc_ucsb") UCSB
+
+        .input-field.col.s2
+            input#loc_slo(
+                name="driver_start_locs",
+                type="radio",
+                value="3"
+            )
+            label(for="loc_slo") CalPoly SLO
+    .row
+        .input-field.col.s6
+            input(
+                placeholder="end",
+                id="driver_endpoint",
+                type="text",
+                class="validate")
+            label(for="end_location") End Location
+    .row
+        .input-field.col.s2
+            input.datepicker(
+                type="date",
+                id="driver_departure_date"
+            )
+            label(for="driver_departure_date") Departure Date
+        .input-field.col.s2
+            input(
+                type="time",
+                id="driver_leave_earliest"
+            )
+            label.active Earliest Departure Time
+        .input-field.col.s2
+            input(
+                type="time",
+                id="driver_leave_latest"
+            )
+            label.active Latest Departure Time
+    .row
+        .input-field.col.s2
+            input(
+                type="text",
+                placeholder="4",
+                id="driver_seats",
+                class="validate"
+            )
+            label(for="driver_seats") Seats Open
+        .input-field.col.s2
+            input(
+                type="text",
+                placeholder="20",
+                id="driver_price_seat",
+                value="$"
+            )
+            label(for="price_seat") Price per Seat
+        .input-field.col.s2
+            input(
+                type="text",
+                placeholder="20",
+                id="driver_threshold"
+            )
+            label(for="threshold") Max alloted detour time
+    .row
+        .input-field.col.s6.right-align
+            button.btn.waves-effect.waves-light(
+                onClick="driver_submit()",
+            ) Submit
+                i.material-icons.right send

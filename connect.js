@@ -50,33 +50,40 @@ connect.getUser = function () {
     });
 }
 
-connect.getUserId = function(username) {
-    con.query("SELECT id FROM `User` WHERE username = ?", [username], function(err, rows) {
-        if ( err ) throw err;
-        console.log('User: \n');
-        console.log(rows);
-        return rows.userId;
+connect.getUserId = function(username, password, callback) {
+    con.query("SELECT id FROM `User` WHERE username = ? AND password = ?", [username, password], function(err, rows) {
+        if ( err )
+            callback(err);
+        else {
+            console.log('User: \n');
+            console.log(rows);
+            callback(null, rows);
+        }
     });
 }
 
 // Gets individual user based on id
-connect.getUser = function (userId) {
-    con.query("SELECT * FROM `User` WHERE userId = ?", [userId], function (err, rows) {
-        if (err) throw err;
-        console.log('User:\n');
-        console.log(rows);
-        return rows;
+connect.getUser = function (username, callback) {
+    con.query("SELECT * FROM `User` WHERE username = ?", [username], function (err, rows) {
+        if (err)
+            callback(err);
+        else {
+            console.log('User:\n');
+            console.log(rows);
+            callback(null, rows);
+        }
     });
 }
 
-connect.addUser = function (username, email, phone) {
-    con.query("INSERT INTO `User` (username, email, phone) VALUES (?, ?, ?)", [username, email, phone], 
+connect.addUser = function (username, email, phone, password, callback) {
+    con.query("INSERT INTO `User` (username, email, phone, password) VALUES (?, ?, ?, ?)", [username, email, phone, password], 
     function (err, rows) {
         if (err) {
-            throw err;
+            callback(err)
         }
         else {
             console.log('Add user success');
+            callback(err, rows.insertId);
         }       
     });
 }
@@ -137,6 +144,17 @@ connect.getRider = function () {
     });
 }
 
+connect.getRidersByUserId = function (userId, callback) {
+    con.query("SELECT * FROM `Rider` WHERE userId = ?", [userId], function (err, rows) {
+        if ( err )
+            callback(err);
+        else {
+            console.log("Found " + rows.length + " riders entries associated with " + userId);
+            callback(null, rows);
+        }
+    });
+}
+
 // Gets rider given id
 connect.getRider = function (riderId) {
     con.query("SELECT * FROM `Rider` WHERE id = ?", [riderId], function (err, rows) {
@@ -147,16 +165,18 @@ connect.getRider = function (riderId) {
     });
 }
 
-connect.addRider = function (userId, leaveDate, leaveEarliest, leaveLatest, startId, endPoints) {
+connect.addRider = function (userId, leaveDate, leaveEarliest, leaveLatest, startId, endPoints, callback) {
     con.query(
-        "INSERT INTO `Rider` (userId, leave_earliest, leave_latest, startId, end_points) VALUES (?, ?, ?, ?, ?)",
-        [userId, leaveEarliest, leaveLatest, startId, endPoints],
+        "INSERT INTO `Rider` (userId, leave_date, leave_earliest, leave_latest, startId, end_points) VALUES (?, ?, ?, ?, ?, ?)",
+        [userId, leaveDate, leaveEarliest, leaveLatest, startId, endPoints],
         function (err, rows) {
             if (err) {
-                throw err;
+                callback(err)
             }
             else {
-                console.log('Add rider success');
+                console.log('Add rider success ' + rows.insertId);
+                callback(null, rows.insertId);
+
             }
     });
 }
@@ -194,6 +214,17 @@ connect.getDriver = function () {
     });
 }
 
+connect.getDriversByUserId = function(userId, callback) {
+    con.query("SELECT * FROM `Driver` WHERE userId = ?", [userId], function (err, rows) {
+        if ( err )
+            callback(err);
+        else {
+            console.log("Found " + rows.length + " driver entries associated with " + userId);
+            callback(null, rows);
+        }
+    });
+}
+
 // Gets rider given id
 connect.getDriver = function (driverId) {
     con.query("SELECT * FROM `Driver` WHERE id = ?", [driverId], function (err, rows) {
@@ -213,8 +244,8 @@ connect.addDriver = function (userId, leaveDate, leaveEarliest, leaveLatest, way
                 callback(err);
             }
             else {
-                console.log('Add driver success');
-                console.log(rows);
+                console.log(userId + " " + leaveEarliest);
+                console.log('Add driver success' + rows.insertId);
                 callback(null, rows.insertId);
             }
         });
@@ -282,6 +313,3 @@ connect.update_matches = function() {
         });
     });
 }
-
-connect.update_matches();
-
