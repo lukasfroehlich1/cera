@@ -62,5 +62,7 @@ create table `Match` (
     `id` int primary key,
     constraint FKMatch_riderId foreign key (id) references Rider(id) on delete cascade on update cascade,
     `driverId` int,
-    constraint FKMatch_driverId foreign key (driverId) references Driver(id) on delete cascade on update cascade
+    constraint FKMatch_driverId foreign key (driverId) references Driver(id) on delete cascade on update cascade,
+	driver_end_point varchar(30),
+	new_trip_time int
 );
