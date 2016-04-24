@@ -46,6 +46,31 @@ connect.addUser = function (username, email, phone) {
             console.log('Add user success');
         }       
     });
-};
+}
 
+connect.deleteUser = function (userId) {
+    con.query("DELETE FROM User WHERE id = ?", [userId],  function (err, rows) {
+        if (err) {
+            throw err;
+        }
+        else {
+            console.log('Delete user success');
+        }    
+    });
+}
 
+connect.updateUser = function (userId, username, email, phone) {
+    con.query("UPDATE User SET username = ?, email = ?, phone = ? WHERE id = ?", [username, email, phone, userId],
+    function (err, rows) {
+        if (err) {
+            throw err;
+        }
+        else {
+            console.log('Update user success');
+        }
+    });
+}
+
+// Rider functions
+
+// Driver functions
