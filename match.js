@@ -49,8 +49,8 @@ var test_drivers1 = [ { id: 1,
   leave_earliest: 100,
   leave_latest: 200,
   waypoints: '',
-  end_point: 'Berkeley',
-  start_point: "UCLA",
+  end_point: 'SF',
+  start_point: "Los Angeles",
   trip_time: 19260,
   threshold: 9600,
   price_seat: 20,
@@ -60,7 +60,7 @@ var test_riders1 = [ { id: 3,
   leave_earliest: 150,
   leave_latest: 160,
   end_points: 'San Jose',
-  start_point: "UCLA"
+  start_point: "Los Angeles"
 }];
 
 
@@ -77,14 +77,17 @@ find_match = function(rider, driver, big_callback) {
     var i = 0;
     async.doUntil(
         function(callback) {
-            // TODO add departure time avg of min/max times
+            var leave_earliest = Math.max(driver.leave_earliest, rider.leave_earliest);
+            var leave_latest = Math.min(driver.leave_latest, rider.leave_latest);
+
             gmAPI.directions({origin: driver.start_point, destination: driver.end_point,
-                waypoints: "optimize:true|" + (driver.waypoints + "|" + end_points[i]).split(' ').join('+')}, function(err, results) {
+                waypoints: "optimize:true|" + (driver.waypoints + "|" + end_points[i]).split(' ').join('+'),
+                departure_time: (leave_earliest + leave_latest) / 2 
+            }, function(err, results) {
                 if (err) {
                     console.log('Error :( -> ' + err);
                     console.log('most likely invalid location input');
                 }else {
-                    //console.log(results);
                     var new_trip_time = results.routes[0].legs.map(function (x) { 
                         return x.duration.value;
                     }).reduce(function (a, b) { return a + b; }, 0);
@@ -98,8 +101,8 @@ find_match = function(rider, driver, big_callback) {
 
 
                     callback(null, {"driver_id": driver.id, "rider_end_point": end_points[i++], "new_trip_time": new_trip_time,
-                                "leave_earliest": Math.max(driver.leave_earliest, rider.leave_earliest), 
-                                "leave_latest":Math.min(driver.leave_latest, rider.leave_latest)});
+                                "leave_earliest": leave_earliest,
+                                "leave_latest": leave_latest});
                 }
             }
         )},
@@ -108,10 +111,8 @@ find_match = function(rider, driver, big_callback) {
         },
         function(err, results){
             if (i == end_points.length && additional_time > driver.threshold) {
-                console.log("no match");
                 big_callback(false);
             } else {
-                console.log("match");
                 big_callback(results);
             }
         }
@@ -137,9 +138,3 @@ map_riders_to_drivers = function(riders, drivers, callback){
         }
 	});
 };
-
-
-map_riders_to_drivers(test_riders1, test_drivers1, function(results) {
-    console.log("final results ");
-    console.log(results);
-});
