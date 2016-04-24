@@ -18,7 +18,7 @@ create table User (
     `password` varchar(30),
     `email` varchar(100),
     `phone` varchar(12),
-    unique(username, password)
+    unique(username)
     -- feel free to add crap to this
 );
 
@@ -49,8 +49,9 @@ create table Rider (
     `id` int primary key auto_increment,
     `userId` int,
     constraint FKRider_userId foreign key (userId) references User(id) on update cascade on delete cascade,
-    `leave_earliest` Timestamp,
-    `leave_latest` Timestamp,
+    `leave_date` Date,
+    `leave_earliest` Time,
+    `leave_latest` Time,
     `startId` int,
     constraint FKRider_startId foreign key (startId) references ValidStarts(id) on update cascade,
     `end_points` varchar(100)
@@ -68,6 +69,6 @@ create table `Match` (
     constraint FKMatch_riderId foreign key (id) references Rider(id) on delete cascade on update cascade,
     `driverId` int,
     constraint FKMatch_driverId foreign key (driverId) references Driver(id) on delete cascade on update cascade,
-	driver_end_point varchar(30),
+	rider_end_point varchar(30),
 	new_trip_time int
 );

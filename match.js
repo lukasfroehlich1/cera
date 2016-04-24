@@ -48,6 +48,7 @@ var test_riders = [ { id: 3,
   } ]
 
 var test_drivers1 = [ { id: 1,
+  leave_date
   leave_earliest: 100,
   leave_latest: 200,
   waypoints: '',
@@ -69,7 +70,7 @@ var test_riders1 = [ { id: 3,
 find_match = function(rider, driver, big_callback) {
     var end_points = rider.end_points.split("|");
 
-    if (driver.start_point != rider.start_point || driver.leave_earliest > rider.leave_latest
+    if (driver.start_point != rider.start_point || rider.leave_date != driver.leave_date || driver.leave_earliest > rider.leave_latest
             || driver.leave_latest < rider.leave_earliest) {
         big_callback(false);
         return;
@@ -99,7 +100,7 @@ find_match = function(rider, driver, big_callback) {
 
                     additional_time = new_trip_time - driver.trip_time;
 
-                    callback(null, {"driver_id": driver.id, "rider_end_point": end_points[i++], "new_trip_time": new_trip_time,
+                    callback(null, {"rider_id": rider.id, "driver_id": driver.id, "rider_end_point": end_points[i++], "new_trip_time": new_trip_time,
                                 "leave_earliest": leave_earliest,
                                 "leave_latest": leave_latest});
                 }
