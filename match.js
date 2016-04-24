@@ -32,7 +32,7 @@ var test_drivers = [ { id: 1,
   price_seat: 20,
   seats: 4 } ]
 
-  var test_riders = [ { id: 3,
+var test_riders = [ { id: 3,
   leave_earliest: 150,
   leave_latest: 160,
   end_points: 'Garden Grove',
@@ -47,94 +47,73 @@ var test_drivers = [ { id: 1,
 
 var test_drivers1 = [ { id: 1,
   leave_earliest: 100,
-  leave_latest:200,
-  waypoints: 'UCLA|UC Irvine',
+  leave_latest: 200,
+  waypoints: '',
   end_point: 'UC Santa Barbara',
   start_point: "UCSD",
   trip_time: 3600,
-  threshold: 1200,
+  threshold: 12000,
   price_seat: 20,
-  seats: 4 } ]
+  seats: 4 } ];
 
-  var test_riders1 = [ { id: 3,
+var test_riders1 = [ { id: 3,
   leave_earliest: 150,
   leave_latest: 160,
-  end_points: 'Garden Grove',
+  end_points: 'Irvine',
   start_point: "UCSD"
-   }]
+}];
 
-find_match = function(rider, driver) {
+find_match = function(rider, driver, big_callback) {
     var end_points = rider.end_points.split("|");
-	var result = false;
-    if (driver.start_point != rider.start_point ||driver.leave_earliest > rider.leave_latest
-            || driver.leave_latest < rider.leave_earliest) {
-        return result;
-    }
-/*
-    for (i = 0; i < end_points.length; i++) {
-        console.log("optimize:true|" + driver.waypoints + "|" + end_points[i]);
-		gmAPI.directions({origin: driver.start_point, destination: driver.end_point,
-			waypoints: "optimize:true|" + driver.waypoints + "|" + end_points[i]}, function(err, results) {
-			if (err) {
-				console.log('Error :( -> ' + err);
-			} else {
-				var new_trip_time = results.routes[0].legs[0].duration.value;
 
-				if (new_trip_time - driver.trip_time <= driver.threshold) {
-					result = {"driver_id": driver.id, "end_point": end_point, "new_trip_time": new_trip_time,
-                                "leave_earliest": max(driver.leave_earliest, rider.leave_earliest), 
-                                "leave_latest":min(driver.leave_latest, rider.leave_latest)};
-				}
-			}
-		});
-		if (result) {
-			break;
-		}	
-	}
-	return result;
-*/
+
+    if (driver.start_point != rider.start_point || driver.leave_earliest > rider.leave_latest
+            || driver.leave_latest < rider.leave_earliest) {
+        big_callback(false);
+        return;
+    }
+
     var additional_time;
     var i = 0;
     async.doUntil(
-            function(callback) {
-                // add departure time
-                gmAPI.directions({origin: driver.start_point, destination: driver.end_point,
-                    waypoints: "optimize:true|" /*+ driver.waypoints + "|"*/ + end_points[i++]}, function(err, results) {
-                    if (err) {
-                        console.log('Error :( -> ' + err);
-                    }else{
-                        //console.log(results);
-                        var new_trip_time = results.routes[0].legs[0].duration.value;
-                        additional_time = new_trip_time - driver.trip_time;
-                        callback(null, {"driver_id": driver.id, "end_point": end_points[i-1], "new_trip_time": new_trip_time,
-                                    "leave_earliest": Math.max(driver.leave_earliest, rider.leave_earliest), 
-                                    "leave_latest":Math.min(driver.leave_latest, rider.leave_latest)});
-                    }
-
-            })},
-            function(){
-                return i >= end_points.length || additional_time <= driver.threshold;
-            },
-            function(err, results){
-                if(i == end_points.length) {
-                    result = false;
-                } else {
-                    result = results;
+        function(callback) {
+            // TODO add departure time avg of min/max times
+            gmAPI.directions({origin: driver.start_point, destination: driver.end_point,
+                waypoints: "optimize:true|" + driver.waypoints + "|" + end_points[i]}, function(err, results) {
+                if (err) {
+                    console.log('Error :( -> ' + err);
+                }else {
+                    //console.log(results);
+                    var new_trip_time = results.routes[0].legs[0].duration.value;
+                    additional_time = new_trip_time - driver.trip_time;
+                    callback(null, {"driver_id": driver.id, "rider_end_point": end_points[i++], "new_trip_time": new_trip_time,
+                                "leave_earliest": Math.max(driver.leave_earliest, rider.leave_earliest), 
+                                "leave_latest":Math.min(driver.leave_latest, rider.leave_latest)});
                 }
-                //console.log(result);
-                return result;
             }
-          );
-
-
+        )},
+        function() {
+            return additional_time <= driver.threshold || i == end_points.length;
+        },
+        function(err, results){
+            if (i == end_points.length && additional_time > driver.threshold) {
+                console.log("no match");
+                big_callback(false);
+            } else {
+                console.log("match");
+                big_callback(results);
+            }
+        }
+      );
 }
 
 //call this asynchronously
-map_riders_to_drivers = function(riders, drivers){
-    var result;
+map_riders_to_drivers = function(riders, drivers, callback){
 	async.map(riders, function(rider, callback1) { 
 		async.map(drivers, function(driver, callback2) {
-			callback2(null, find_match(rider, driver));
+            find_match(rider, driver, function(results) {
+                callback2(null, results);
+            })
 		}, function(err, results) {
 			callback1(null, results.filter(function (x) { return x != false }));
 		});
@@ -142,10 +121,14 @@ map_riders_to_drivers = function(riders, drivers){
 		if (err) {
 			console.log("Error: " + err);
 		}
-        console.log(123);
-        result = results;
-        return result;
+        else {
+            callback(results);
+        }
 	});
 };
 
-map_riders_to_drivers(test_riders1, test_drivers1);
+
+map_riders_to_drivers(test_riders1, test_drivers1, function(results) {
+    console.log("final results ");
+    console.log(results);
+});
