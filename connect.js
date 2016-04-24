@@ -147,7 +147,7 @@ connect.getRider = function (riderId) {
     });
 }
 
-connect.addRider = function (userId, leaveEarliest, leaveLatest, startId, endPoints) {
+connect.addRider = function (userId, leaveDate, leaveEarliest, leaveLatest, startId, endPoints) {
     con.query(
         "INSERT INTO `Rider` (userId, leave_earliest, leave_latest, startId, end_points) VALUES (?, ?, ?, ?, ?)",
         [userId, leaveEarliest, leaveLatest, startId, endPoints],
@@ -204,17 +204,18 @@ connect.getDriver = function (driverId) {
     });
 }
 
-connect.addDriver = function (userId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoint, startId, threshold, priceSeat, seat) {
+connect.addDriver = function (userId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoint, startId, threshold, priceSeat, seat, callback) {
     connect.calculate_trip_time(startId, endPoint, function(result){
         var trip_time = result;
         con.query("INSERT INTO `Driver` (userId, leave_date, leave_earliest, leave_latest, waypoints, end_point, startId, trip_time, threshold, price_seat, seats) VALUES (?, str_to_date(?, \"%e %M, %Y\"), ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [userId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoint, startId, trip_time, threshold, priceSeat, seat], function (err, rows) {
             if (err) {
-                throw err;
+                callback(err);
             }
             else {
                 console.log('Add driver success');
                 console.log(rows);
+                callback(null, rows.insertId);
             }
         });
     });
@@ -247,7 +248,7 @@ connect.updateDriver = function (driverId, leaveDate, leaveEarliest, leaveLatest
 
 
 
-get_matches = function(riderId) {
+connect.get_matches = function(riderId) {
     con.query("SELECT * FROM `Match` WHERE id = ?", [riderId], function(err, rows) { 
         if ( err ) throw err;
         console.log("Requesting matches");
@@ -255,27 +256,24 @@ get_matches = function(riderId) {
     });
 }
 
-update_matches = function() {
+connect.update_matches = function() {
     con.query("SELECT id, leave_date, leave_earliest, leave_latest, waypoints, end_point, coordinate start_point, trip_time, threshold from `Driver` join `ValidStarts` where startId = ValidStarts.id", [], function(err, drivers) {
         if (err) throw err;
-
-
         con.query("SELECT id, leave_date, leave_earliest, leave_latest, coordinate start_point, end_points from `Rider` join `ValidStarts` where startId = ValidStarts.id", [], function(err, riders) {
-
             if (err) throw err;
-
             con.query("Truncate table `Match`", [], function(err, riders) {
-
                 if (err) throw err;
-
                 match.map_riders_to_drivers(riders, drivers, function(results) {
-
-                    con.query("INSERT INTO `Match` values (?, ?, ?, ?)", [results.rider_id, results.driver_id, results.rider_end_point, results.new_trip_time], function(err, riders) {
-
-                        if (err) throw err;
-                    }
-                }
-            }
-        }
-    }
+                    con.query("INSERT INTO `Match` values (?, ?, ?, ?)", 
+                        [results.rider_id, results.driver_id, results.rider_end_point, 
+                        results.new_trip_time], function(err, riders) {
+                            if (err) throw err;
+                        });
+                });
+            });
+        });
+    });
 }
+
+connect.update_matches();
+
