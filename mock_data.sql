@@ -1,5 +1,5 @@
 -- adding a new user
-insert into `User` (username, email, phone) values ('bobbytables', 'tb@me.com', '415'), ('jwu', 'tje@c.com', '582');
+insert into `User` (username, password, email, phone) values ('bobbytables', 'abc', 'tb@me.com', '415'), ('jwu', '123test', 'tje@c.com', '582');
 
 
 -- add valid stop locations

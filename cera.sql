@@ -14,9 +14,11 @@ use cera;
 
 create table User (
     `id` int primary key auto_increment,
-    `username` varchar(30) unique,
+    `username` varchar(30),
+    `password` varchar(30),
     `email` varchar(100),
-    `phone` varchar(12)
+    `phone` varchar(12),
+    unique(username, password)
     -- feel free to add crap to this
 );
 
