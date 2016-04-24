@@ -11,30 +11,90 @@ html(lang="en")
                     a(href="#") Rider
             br
             #driverForm
-                form.col.s12
+                form.col.s6(onsubmit="driver_submit()")
                     .row
-                        .input-field.col.s12
-                            input(
-                                placeholder="start",
-                                id="start_location",
-                                type="text",
-                                class="validate")
-                            label(for="start_location") Start Location
+                        .input-field.col.s2
+                            input#loc_ucsd(
+                                name="start_locs",
+                                type="radio",
+                                value="ucsd"
+                            )
+                            label(for="loc_ucsd") UCSD
+                            label.active Start Location
+                        .input-field.col.s2
+                            input#loc_ucsb(
+                                name="start_locs",
+                                type="radio",
+                                value="ucsb"
+                            )
+                            label(for="loc_ucsb") UCSB
+
+                        .input-field.col.s2
+                            input#loc_slo(
+                                name="start_locs",
+                                type="radio",
+                                value="slo"
+                            )
+                            label(for="loc_slo") CalPoly SLO
                     .row
-                        .input-field.col.s12
+                        .input-field.col.s6
                             input(
                                 placeholder="end",
-                                id="end_location",
+                                id="driver_endpoint",
                                 type="text",
                                 class="validate")
                             label(for="end_location") End Location
                     .row
-                        .input-field.col.s12
+                        .input-field.col.s2
                             input.datepicker(
                                 type="date",
-                                id="departure_date"
+                                id="driver_departure_date"
                             )
                             label(for="departure_date") Departure Date
+                        .input-field.col.s2
+                            input(
+                                type="time",
+                                id="driver_leave_earliest"
+                            )
+                            label.active Earliest Departure Time
+                        .input-field.col.s2
+                            input(
+                                type="time",
+                                id="driver_leave_latest"
+                            )
+                            label.active Latest Departure Time
+                    .row
+                        .input-field.col.s2
+                            input(
+                                type="text",
+                                placeholder="4",
+                                id="driver_seats",
+                                class="validate"
+                            )
+                            label(for="driver_seats") Seats Open
+                        .input-field.col.s2
+                            input(
+                                type="text",
+                                placeholder="20",
+                                id="driver_price_seat",
+                                value="$"
+                            )
+                            label(for="price_seat") Price per Seat
+                        .input-field.col.s2
+                            input(
+                                type="text",
+                                placeholder="20",
+                                id="driver_threshold"
+                            )
+                            label(for="threshold") Max alloted detour time
+                    .row
+                        .input-field.col.s6.right-align
+                            button.btn.waves-effect.waves-light(
+                                type="submit",
+                                name="action"
+                            ) Submit
+                                i.material-icons.right send
+
             #riderForm
         
 
