@@ -120,7 +120,7 @@ connect.addRider = function (userId, leaveEarliest, leaveLatest, startId, endPoi
             });
         }
         else {
-            throw new Error("Cannot add Rider. Rider with id " + userId + " already a driver.");
+            throw new Error("Cannot add rider. User with id " + userId + " already a driver.");
         }
 }  
 
@@ -135,8 +135,8 @@ connect.deleteRider = function (riderId) {
     });
 }
 
-connect.updateRider = function (userId, leaveEarliest, leaveLatest, startId, endPoints) {
-    con.query("UPDATE `Rider` SET leave_earliest = ?, leave_latest = ?, startId = ?, end_points = ?, phone = ? RE id = ?", [leaveEarliest, leaveLatest, startId, endPoints, riderId], function (err, rows) {
+connect.updateRider = function (riderId, leaveEarliest, leaveLatest, startId, endPoints) {
+    con.query("UPDATE `Rider` SET leave_earliest = ?, leave_latest = ?, startId = ?, end_points = ?, phone = ? WHERE id = ?", [leaveEarliest, leaveLatest, startId, endPoints, riderId], function (err, rows) {
         if (err) {
             throw err;
         }
@@ -147,3 +147,64 @@ connect.updateRider = function (userId, leaveEarliest, leaveLatest, startId, end
 }
 
 // Driver functions
+// Gets all current drivers
+connect.getDriver = function () {
+    con.query("SELECT * FROM `Driver`", function (err, rows) {
+        if (err) throw err;
+        console.log('Driver:\n');
+        console.log(rows); 
+        return rows;
+    });
+}
+
+// Gets rider given id
+connect.getDriver = function (driverId) {
+    con.query("SELECT * FROM `Driver` WHERE id = ?", [driverId], function (err, rows) {
+        if (err) throw err;
+        console.log('Driver:\n');
+        console.log(rows); 
+        return rows;
+    });
+}
+
+connect.addDriver = function (userId, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat) {
+    con.query("SELECT * FROM Rider WHERE id = ?", [userID], function(err, rows) {
+        if (err) {
+            throw err;
+        }
+        else if (rows.length <= 0) {
+            con.query("INSERT INTO `Driver` (id, leave_earliest, leave_latest, waypoints, end_point, startId, threshold, price_seat, seats) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [userId, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat], function (err, rows) {
+                if (err) {
+                    throw err;
+                }
+                else {
+                    console.log('Add driver success');
+                }
+            });
+        }
+        else {
+            throw new Error("Cannot add driver. User with id " + userId + " already a rider.");
+        }
+}  
+
+connect.deleteDriver = function (driverId) {
+    con.query("DELETE FROM `Driver` WHERE id = ?", [driverId], function (err, rows) {
+        if (err) {
+            throw err;
+        }
+        else {
+            console.log('Delete driver success');
+        } 
+    });
+}
+
+connect.updateDriver = function (driverId, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat) {
+    con.query("UPDATE `Driver` SET leave_earliest = ?, leave_latest = ?, waypoint = ?, end_points = ?, startId = ?, threshold = ?, price_seat = ?, seat = ? WHERE id = ?", [leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat, driverId], function (err, rows) {
+        if (err) {
+            throw err;
+        }
+        else {
+            console.log('Update driver success');
+        }
+    });
+}
