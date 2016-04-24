@@ -88,25 +88,29 @@ connect.addUser = function (username, email, phone, password, callback) {
     });
 }
 
-connect.deleteUser = function (userId) {
+connect.deleteUser = function (userId, callback) {
     con.query("DELETE FROM `User` WHERE id = ?", [userId],  function (err, rows) {
         if (err) {
-            throw err;
+            callback(err);
         }
         else {
             console.log('Delete user success');
+            connect.update_matches();
+            callback(null, null);
         }    
     });
 }
 
-connect.updateUser = function (userId, username, email, phone) {
+connect.updateUser = function (userId, username, email, phone, callback) {
     con.query("UPDATE `User` SET username = ?, email = ?, phone = ? WHERE id = ?", [username, email, phone, userId],
     function (err, rows) {
         if (err) {
-            throw err;
+            callback(err);
         }
         else {
             console.log('Update user success');
+            connect.update_matches();
+            callback(null, null);
         }
     });
 }
@@ -135,12 +139,12 @@ connect.calculate_trip_time = function (startId, endPoint, callback) {
 
 // Rider functions //
 // Gets all current riders
-connect.getRider = function () {
+connect.getRider = function (callback) {
     con.query("SELECT * FROM `Rider`", function (err, rows) {
-        if (err) throw err;
+        if (err) callback(err);
         console.log('Riders:\n');
         console.log(rows); 
-        return rows;
+        callback(null, rows);
     });
 }
 
@@ -156,12 +160,12 @@ connect.getRidersByUserId = function (userId, callback) {
 }
 
 // Gets rider given id
-connect.getRider = function (riderId) {
+connect.getRider = function (riderId, callback) {
     con.query("SELECT * FROM `Rider` WHERE id = ?", [riderId], function (err, rows) {
-        if (err) throw err;
+        if (err) callback(err);
         console.log('Rider:\n');
         console.log(rows); 
-        return rows;
+        callback(null, rows);
     });
 }
 
@@ -175,42 +179,47 @@ connect.addRider = function (userId, leaveDate, leaveEarliest, leaveLatest, star
             }
             else {
                 console.log('Add rider success ' + rows.insertId);
+                connect.update_matches();
                 callback(null, rows.insertId);
 
             }
     });
 }
 
-connect.deleteRider = function (riderId) {
+connect.deleteRider = function (riderId, callback) {
     con.query("DELETE FROM `Rider` WHERE id = ?", [riderId], function (err, rows) {
         if (err) {
-            throw err;
+            callback(err);
         }
         else {
             console.log('Delete rider success');
+            connect.update_matches();
+            callback(null, null);
         } 
     });
 }
 
-connect.updateRider = function (riderId, leaveEarliest, leaveLatest, startId, endPoints) {
+connect.updateRider = function (riderId, leaveEarliest, leaveLatest, startId, endPoints, callback) {
     con.query("UPDATE `Rider` SET leave_earliest = ?, leave_latest = ?, startId = ?, end_points = ?, phone = ? WHERE id = ?", [leaveEarliest, leaveLatest, startId, endPoints, riderId], function (err, rows) {
         if (err) {
-            throw err;
+            callback(err);
         }
         else {
             console.log('Update rider success');
+            connect.update_matches();
+            callback(null, null);
         }
     });
 }
 
 // Driver functions
 // Gets all current drivers
-connect.getDriver = function () {
+connect.getDriver = function (callback) {
     con.query("SELECT * FROM `Driver`", function (err, rows) {
-        if (err) throw err;
+        if (err) callback(err);
         console.log('Driver:\n');
         console.log(rows); 
-        return rows;
+        callback(null, rows);
     });
 }
 
@@ -226,12 +235,12 @@ connect.getDriversByUserId = function(userId, callback) {
 }
 
 // Gets rider given id
-connect.getDriver = function (driverId) {
+connect.getDriver = function (driverId, callback) {
     con.query("SELECT * FROM `Driver` WHERE id = ?", [driverId], function (err, rows) {
-        if (err) throw err;
+        if (err) callback(err);
         console.log('Driver:\n');
         console.log(rows); 
-        return rows;
+        callback(null, rows);
     });
 }
 
@@ -246,37 +255,41 @@ connect.addDriver = function (userId, leaveDate, leaveEarliest, leaveLatest, way
             else {
                 console.log(userId + " " + leaveEarliest);
                 console.log('Add driver success' + rows.insertId);
+                connect.update_matches();
                 callback(null, rows.insertId);
             }
         });
     });
 }  
 
-connect.deleteDriver = function (driverId) {
+connect.deleteDriver = function (driverId, callback) {
     con.query("DELETE FROM `Driver` WHERE id = ?", [driverId], function (err, rows) {
         if (err) {
-            throw err;
+            callback(err);
         }
         else {
             console.log('Delete driver success');
+            connect.update_matches();
+            callback(null, null);
         } 
     });
 }
 
-connect.updateDriver = function (driverId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat) {
+connect.updateDriver = function (driverId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat, callback) {
     con.query("UPDATE `Driver` SET leave_date = str_to_date(?, \"%e %M, %Y\"), leave_earliest = ?, leave_latest = ?, waypoint = ?, end_points = ?, startId = ?, threshold = ?, price_seat = ?, seat = ? WHERE id = ?", 
             [leaveDate, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat, driverId], function (err, rows) {
         if (err) {
-            throw err;
+            callback(err);
         }
         else {
             console.log('Update driver success');
+            callback(null, null);
+            connect.update_matches();
         }
     });
 }
 
 //connect.addDriver(2,"5 April, 2016","15:04","17:20","","UCLA",2,500,20,5);
-
 
 
 connect.get_matches_rider = function(riderId, callback) {
