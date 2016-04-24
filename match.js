@@ -13,61 +13,11 @@ var publicConfig = {
 
 var gmAPI = new GoogleMapsAPI(publicConfig);
 
-var test_drivers = [ { id: 1,
-  leave_earliest: 100,
-  leave_latest:200,
-  waypoints: 'UCLA|UC Irvine',
-  end_point: 'UC Santa Barbara',
-  start_point: "UCSD",
-  trip_time: 3600,
-  threshold: 1200,
-  price_seat: 20,
-  seats: 4 } ,
- { id: 2,
-  leave_earliest: 300,
-  leave_latest: 400,
-  waypoints: 'UCLA|UC Irvine',
-  end_point: 'UC Santa Barbara',
-  start_point: "UCSD",
-  trip_time: 3600,
-  threshold: 1200,
-  price_seat: 20,
-  seats: 4 } ]
-
-var test_riders = [ { id: 3,
-  leave_earliest: 150,
-  leave_latest: 160,
-  end_points: 'Garden Grove',
-  start_point: "UCSD"
-   } ,
- { id: 2,
-  leave_earliest: 170,
-  leave_latest: 180,
-  end_points: 'Santa Monica',
-  start_point: "UCSD"
-  } ]
-
-var test_drivers1 = [ { id: 1,
-  leave_date
-  leave_earliest: 100,
-  leave_latest: 200,
-  waypoints: '',
-  end_point: 'Berkeley,CA',
-  start_point: "UCLA,CA",
-  trip_time: 19260,
-  threshold: 3600,
-  price_seat: 20,
-  seats: 4 } ];
-
-var test_riders1 = [ { id: 3,
-  leave_earliest: 150,
-  leave_latest: 160,
-  end_points: 'San Jose,CA',
-  start_point: "UCLA,CA"
-}];
-
 
 find_match = function(rider, driver, big_callback) {
+    console.log(rider.end_point);
+    console.log("endPoint: " + rider.end_points);
+
     var end_points = rider.end_points.split("|");
 
     if (driver.start_point != rider.start_point || rider.leave_date != driver.leave_date || driver.leave_earliest > rider.leave_latest
@@ -121,8 +71,11 @@ find_match = function(rider, driver, big_callback) {
 
 //call this asynchronously
 match.map_riders_to_drivers = function(riders, drivers, callback){
+    console.log("othe side " + riders);
+    console.log(riders);
 	async.map(riders, function(rider, callback1) { 
 		async.map(drivers, function(driver, callback2) {
+            console.log(rider);
             find_match(rider, driver, function(results) {
                 callback2(null, results);
             })

@@ -17,14 +17,15 @@
   },
   "homepage": "https://github.com/lukasfroehlich1/cera",
   "dependencies": {
-    "body-parser": "^1.15.0",
     "async": "^1.5.2",
+    "body-parser": "^1.15.0",
     "cookie-parser": "^1.4.1",
     "csurf": "^1.8.3",
     "express": "^4.13.4",
     "forms": "^1.1.4",
-    "materialize-css": "^0.97.6",
     "googlemaps": "^1.4.0",
+    "materialize-css": "^0.97.6",
+    "mysql": "^2.10.2",
     "pug": "^2.0.0-alpha6"
   }
 }

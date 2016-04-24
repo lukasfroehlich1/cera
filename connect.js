@@ -257,10 +257,16 @@ connect.get_matches = function(riderId) {
 }
 
 connect.update_matches = function() {
-    con.query("SELECT id, leave_date, leave_earliest, leave_latest, waypoints, end_point, coordinate start_point, trip_time, threshold from `Driver` join `ValidStarts` where startId = ValidStarts.id", [], function(err, drivers) {
+    con.query("SELECT Driver.id `id`, leave_date, leave_earliest, leave_latest, waypoints, end_point, coordinate start_point, trip_time, threshold from `Driver` join `ValidStarts` where startId = ValidStarts.id", [], function(err, drivers) {
         if (err) throw err;
-        con.query("SELECT id, leave_date, leave_earliest, leave_latest, coordinate start_point, end_points from `Rider` join `ValidStarts` where startId = ValidStarts.id", [], function(err, riders) {
+        con.query("SELECT Rider.id `id`, leave_date, leave_earliest, leave_latest, coordinate start_point, end_points from `Rider` join `ValidStarts` where startId = ValidStarts.id", [], function(err, riders) {
             if (err) throw err;
+
+            console.log("riders " + riders);
+            console.log(riders);
+            console.log("drivers " + drivers);
+            console.log(drivers);
+
             con.query("Truncate table `Match`", [], function(err, riders) {
                 if (err) throw err;
                 match.map_riders_to_drivers(riders, drivers, function(results) {
