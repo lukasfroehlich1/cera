@@ -12,44 +12,78 @@ var publicConfig = {
 var gmAPI = new GoogleMapsAPI(publicConfig);
 
 var test_drivers = [ { id: 1,
-  leave_earliest: Fri May 06 2016 00:00:00 GMT-0400 (EDT),
-  leave_latest: Sat May 07 2016 00:00:00 GMT-0400 (EDT),
-  waypoints: '41.40338, 2.17403|41.40338, 2.17403',
-  end_point: '61.40338, 3.17403',
+  leave_earliest: 100,
+  leave_latest:200,
+  waypoints: 'UCLA|UC Irvine',
+  end_point: 'UC Santa Barbara',
   start_point: "UCSD",
   trip_time: 3600,
   threshold: 1200,
   price_seat: 20,
   seats: 4 } ,
  { id: 2,
-  leave_earliest: Fri May 06 2016 00:00:00 GMT-0400 (EDT),
-  leave_latest: Sat May 07 2016 00:00:00 GMT-0400 (EDT),
-  waypoints: '41.40338, 2.17403|41.40338, 2.17403',
-  end_point: '61.40338, 3.17403',
-  startId: 1,
+  leave_earliest: 300,
+  leave_latest: 400,
+  waypoints: 'UCLA|UC Irvine',
+  end_point: 'UC Santa Barbara',
+  start_point: "UCSD",
   trip_time: 3600,
   threshold: 1200,
   price_seat: 20,
   seats: 4 } ]
 
+  var test_riders = [ { id: 3,
+  leave_earliest: 150,
+  leave_latest: 160,
+  end_points: 'Garden Grove',
+  start_point: "UCSD"
+   } ,
+ { id: 2,
+  leave_earliest: 170,
+  leave_latest: 180,
+  end_points: 'Santa Monica',
+  start_point: "UCSD"
+  } ]
 
-find_match = function(driver, rider) {
+var test_drivers1 = [ { id: 1,
+  leave_earliest: 100,
+  leave_latest:200,
+  waypoints: 'UCLA|UC Irvine',
+  end_point: 'UC Santa Barbara',
+  start_point: "UCSD",
+  trip_time: 3600,
+  threshold: 1200,
+  price_seat: 20,
+  seats: 4 } ]
+
+  var test_riders1 = [ { id: 3,
+  leave_earliest: 150,
+  leave_latest: 160,
+  end_points: 'Garden Grove',
+  start_point: "UCSD"
+   }]
+
+find_match = function(rider, driver) {
     var end_points = rider.end_points.split("|");
 	var result = false;
-    for (end_point in end_points) {
+    if (driver.start_point != rider.start_point ||driver.leave_earliest > rider.leave_latest
+            || driver.leave_latest < rider.leave_earliest) {
+        return result;
+    }
+/*
+    for (i = 0; i < end_points.length; i++) {
+        console.log("optimize:true|" + driver.waypoints + "|" + end_points[i]);
 		gmAPI.directions({origin: driver.start_point, destination: driver.end_point,
-			waypoints: "optimize:true|" + driver.waypoints + "|" + end_point}, function(err, results) {
+			waypoints: "optimize:true|" + driver.waypoints + "|" + end_points[i]}, function(err, results) {
 			if (err) {
-				console.log('Error' + err);
-			}
-			else {
-				console.log(results);
-				console.log(results.routes[0].legs[0].duration.value);
-
+				console.log('Error :( -> ' + err);
+			} else {
 				var new_trip_time = results.routes[0].legs[0].duration.value;
 
 				if (new_trip_time - driver.trip_time <= driver.threshold) {
-					result = {"driver_id": driver.id, "end_point": end_point, "new_trip_time": new_trip_time};
+					result = {"driver_id": driver.id, "end_point": end_point, "new_trip_time": new_trip_time,
+                                "leave_earliest": max(driver.leave_earliest, rider.leave_earliest), 
+                                "leave_latest":min(driver.leave_latest, rider.leave_latest)};
 				}
 			}
 		});
@@ -58,9 +92,44 @@ find_match = function(driver, rider) {
 		}	
 	}
 	return result;
+*/
+    var additional_time;
+    var i = 0;
+    async.doUntil(
+            function(callback) {
+                // add departure time
+                gmAPI.directions({origin: driver.start_point, destination: driver.end_point,
+                    waypoints: "optimize:true|" /*+ driver.waypoints + "|"*/ + end_points[i++]}, function(err, results) {
+                    if (err) {
+                        console.log('Error :( -> ' + err);
+                    }else{
+                        //console.log(results);
+                        var new_trip_time = results.routes[0].legs[0].duration.value;
+                        additional_time = new_trip_time - driver.trip_time;
+                        callback(null, {"driver_id": driver.id, "end_point": end_points[i-1], "new_trip_time": new_trip_time,
+                                    "leave_earliest": Math.max(driver.leave_earliest, rider.leave_earliest), 
+                                    "leave_latest":Math.min(driver.leave_latest, rider.leave_latest)});
+                    }
+
+            })},
+            function(){
+                return i >= end_points.length || additional_time <= driver.threshold;
+            },
+            function(err, results){
+                if(i == end_points.length) {
+                    result = false;
+                } else {
+                    result = results;
+                }
+                //console.log(result);
+                return result;
+            }
+          );
+
+
 }
 
-
+//call this asynchronously
 map_riders_to_drivers = function(riders, drivers){
     var result;
 	async.map(riders, function(rider, callback1) { 
@@ -73,8 +142,10 @@ map_riders_to_drivers = function(riders, drivers){
 		if (err) {
 			console.log("Error: " + err);
 		}
+        console.log(123);
         result = results;
+        return result;
 	});
-    return result;
 };
 
+map_riders_to_drivers(test_riders1, test_drivers1);
