@@ -5,35 +5,35 @@ html(lang="en")
         .container
             h1 CERA
             ul(class="nav nav-tabs")
-                li.active(role="presentation")
-                    a(href="#") Driver
-                li(role="presentation")
-                    a(href="#") Rider
+                li#driverTab.active(role="presentation")
+                    a(href="#driverForm", data-toggle="tab", name="#riderForm") Driver
+                li#riderTab(role="presentation")
+                    a(href="#riderForm", data-toggle="tab", name="#driverForm") Rider
             br
             #driverForm
                 form.col.s6(onsubmit="driver_submit()")
                     .row
                         .input-field.col.s2
                             input#loc_ucsd(
-                                name="start_locs",
+                                name="driver_start_locs",
                                 type="radio",
-                                value="ucsd"
+                                value="1"
                             )
                             label(for="loc_ucsd") UCSD
                             label.active Start Location
                         .input-field.col.s2
                             input#loc_ucsb(
-                                name="start_locs",
+                                name="driver_start_locs",
                                 type="radio",
-                                value="ucsb"
+                                value="2"
                             )
                             label(for="loc_ucsb") UCSB
 
                         .input-field.col.s2
                             input#loc_slo(
-                                name="start_locs",
+                                name="driver_start_locs",
                                 type="radio",
-                                value="slo"
+                                value="3"
                             )
                             label(for="loc_slo") CalPoly SLO
                     .row
@@ -95,6 +95,64 @@ html(lang="en")
                             ) Submit
                                 i.material-icons.right send
 
-            #riderForm
-        
+            #riderForm(style="display:none")
+                form.col.s6(onsubmit="rider_submit()")
+                    .row
+                        .input-field.col.s2
+                            input#loc_ucsd(
+                                name="rider_start_locs",
+                                type="radio",
+                                value="1"
+                            )
+                            label(for="loc_ucsd") UCSD
+                            label.active Start Location
+                        .input-field.col.s2
+                            input#loc_ucsb(
+                                name="rider_start_locs",
+                                type="radio",
+                                value="2"
+                            )
+                            label(for="loc_ucsb") UCSB
+
+                        .input-field.col.s2
+                            input#loc_slo(
+                                name="rider_start_locs",
+                                type="radio",
+                                value="3"
+                            )
+                            label(for="loc_slo") CalPoly SLO
+                    .row
+                        .input-field.col.s6
+                            input(
+                                placeholder="end",
+                                id="rider_endpoint",
+                                type="text",
+                                class="validate")
+                            label(for="end_location") End Location
+                    .row
+                        .input-field.col.s2
+                            input.datepicker(
+                                type="date",
+                                id="rider_departure_date"
+                            )
+                            label(for="departure_date") Departure Date
+                        .input-field.col.s2
+                            input(
+                                type="time",
+                                id="rider_leave_earliest"
+                            )
+                            label.active Earliest Departure Time
+                        .input-field.col.s2
+                            input(
+                                type="time",
+                                id="rider_leave_latest"
+                            )
+                            label.active Latest Departure Time
+                    .row
+                        .input-field.col.s6.right-align
+                            button.btn.waves-effect.waves-light(
+                                type="submit",
+                                name="action"
+                            ) Submit
+                                i.material-icons.right send
 

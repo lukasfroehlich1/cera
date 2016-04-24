@@ -1,6 +1,10 @@
 var express = require('express');
 var app = express();
 var parser = require('body-parser');
+var api = require('./connect');
+
+api.start();
+
 app.set('view engine', 'pug');
 
 app.set('views', __dirname+'/public/views');
@@ -15,8 +19,10 @@ app.get('/', function (req, res) {
 });
 
 app.post('/drivers', function(req, res) {
-    var id = req.body.endPoint;
-    console.log(req.body);
+    var packet = req.body;
+
+    api.addDriver(1, packet.earliest_leave, packet.latest_leave, "", packet.end_point, parseInt(packet.startId), packet.threshold, packet.price_seat, packet.seats);
+    api.getDriver(3);
 
     res.writeHead(200, {"Content-Type": "application/json"});
     var json = JSON.stringify({
