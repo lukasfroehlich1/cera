@@ -3,6 +3,44 @@ $(function() {
         selectMonths: true,
         selectYears: 2
     });
+
+    $("#login_button").click(function() {
+        $.ajax({
+            url: "/login",
+            method: "POST",
+            dataType: "json",
+            data: {
+                username: $("#username").val(),
+                password: $("#password").val()
+            },
+            success: function(data, stat) {
+            }
+        });
+    });
+
+    $("#register_button").click(function() {
+        $.ajax({
+            url: "/register",
+            method: "POST",
+            dataType: "json",
+            data: {
+                username: $("#username").val(),
+                password: $("#password").val(),
+                email: $("#email").val(),
+                phone: $("#phone").val()
+            },
+            success: function(data, stat) {
+            }
+        });
+    });
+
+    $("#initiate_register_button").click(function() {
+        $("#login_button").hide();
+        $("#register_button").show();
+        $(".hidden_field").show();
+        $("#initiate_register_button").hide();
+    });
+
     $("#price_seat").keydown(function(e) {
         var oldvalue=$(this).val();
         var field=this;
@@ -34,10 +72,11 @@ function rider_submit() {
             leave_earliest : $("#rider_leave_earliest").val(),
             leave_latest : $("#rider_leave_latest").val(),
             end_point : $("#rider_endpoint").val(),
-        },
-        success: function(data, stat) {
         }
     });
+}
+
+function login() {
 }
 
 function driver_submit() {

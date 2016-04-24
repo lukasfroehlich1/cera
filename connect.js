@@ -38,33 +38,41 @@ connect.getUser = function () {
     });
 }
 
-connect.getUserId = function(username) {
-    con.query("SELECT id FROM `User` WHERE username = ?", [username], function(err, rows) {
-        if ( err ) throw err;
-        console.log('User: \n');
-        console.log(rows);
-        return rows.userId;
+connect.getUserId = function(username, password, callback) {
+    con.query("SELECT id FROM `User` WHERE username = ?, password = ?", [username, password], function(err, rows) {
+        if ( err )
+            callback(err);
+        else {
+            console.log('User: \n');
+            console.log(rows);
+            callback(null, rows);
+        }
     });
 }
 
 // Gets individual user based on id
-connect.getUser = function (userId) {
-    con.query("SELECT * FROM `User` WHERE userId = ?", [userId], function (err, rows) {
-        if (err) throw err;
-        console.log('User:\n');
-        console.log(rows);
-        return rows;
+connect.getUser = function (username, callback) {
+    con.query("SELECT * FROM `User` WHERE username = ?", [username], function (err, rows) {
+        if (err)
+            callback(err);
+        else {
+            console.log('User:\n');
+            console.log(rows);
+            callback(null, rows);
+        }
     });
 }
 
-connect.addUser = function (username, email, phone) {
-    con.query("INSERT INTO `User` (username, email, phone) VALUES (?, ?, ?)", [username, email, phone], 
+connect.addUser = function (username, email, phone, password, callback) {
+    con.query("INSERT INTO `User` (username, email, phone, password) VALUES (?, ?, ?, ?)", [username, email, phone, password], 
     function (err, rows) {
         if (err) {
-            throw err;
+            callback(err)
         }
         else {
             console.log('Add user success');
+            console.log(rows);
+            callback(err, rows.insertId);
         }       
     });
 }

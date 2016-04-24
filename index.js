@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var parser = require('body-parser');
 var api = require('./connect');
+var async = require('async');
 
 app.set('view engine', 'pug');
 
@@ -15,7 +16,54 @@ app.use(parser.urlencoded({
 api.start();
 
 app.get('/', function (req, res) {
-    res.render('index.pug');
+    res.render('index.pug', {pageContent: {userId: req.query.id}});
+});
+
+app.get('/login', function(req, res) {
+    res.render('login.pug');
+});
+
+app.post('/login', function(req, res) {
+    async.waterfall([
+        function getUserId(userIdCallback){
+            api.getUserId(req.body.username, req.body.password, userIdCallback);
+        },
+        function checkUsers(row, checkCallback){
+            if(row.length != 1)
+                checkCallback("hello");
+            else
+                res.render("index.pug", {pageData: {UserID: row.id}});
+        }
+    ], function(error) {
+        if ( error ) {
+        }
+    });
+});
+
+app.post('/register', function(req, res) {
+    async.waterfall([
+        function getUser(getCallback) {
+            api.getUser(req.body.username, getCallback);
+        },
+        function checkUser(userRows, checkCallback) {
+            // only allow unique names
+            if ( userRows.length != 0 )
+                checkCallback("username exists");
+            else
+                checkCallback(null, null);
+        },
+        function addUser(holder, userCallback) {
+            api.addUser(req.body.username, req.body.email, req.body.phone, req.body.password, userCallback);
+        },
+        function loadPage(user, loadCallback) {
+            res.redirect('/?id='+user.id);
+        }], function(err) {
+            if (err) {
+                console.log(err);
+                console.log("Error in adding new user");
+            }
+        }
+    );
 });
 
 app.get('/matches', function(req, res) {
