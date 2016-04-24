@@ -27,12 +27,24 @@ connect.end = function () {
     });
 }
 
-// User functions
+// User functions //
+// Gets all current users
 connect.getUser = function () {
-    con.query("SELECT * FROM Driver", function (err, rows) {
+    con.query("SELECT * FROM User", function (err, rows) {
         if (err) throw err;
-        console.log('Data received from Db:\n');
+        console.log('Users:\n');
         console.log(rows); 
+        return rows;
+    });
+}
+
+// Gets individual user based on id
+connect.getUser = function (userId) {
+    con.query("SELECT * FROM User WHERE userId = ?", [userId], function (err, rows) {
+        if (err) throw err;
+        console.log('User:\n');
+        console.log(rows);
+        return rows;
     });
 }
 
