@@ -260,20 +260,22 @@ connect.update_matches = function() {
     con.query("SELECT Driver.id `id`, leave_date, leave_earliest, leave_latest, waypoints, end_point, coordinate start_point, trip_time, threshold from `Driver` join `ValidStarts` where startId = ValidStarts.id", [], function(err, drivers) {
         if (err) throw err;
         con.query("SELECT Rider.id `id`, leave_date, leave_earliest, leave_latest, coordinate start_point, end_points from `Rider` join `ValidStarts` where startId = ValidStarts.id", [], function(err, riders) {
-            if (err) throw err;
-
-            console.log("riders " + riders);
-            console.log(riders);
-            console.log("drivers " + drivers);
-            console.log(drivers);
-
-            con.query("Truncate table `Match`", [], function(err, riders) {
-                if (err) throw err;
+            if (err) 
+                throw err;
+            con.query("Truncate table `Match`", [], function(err, throwAway) {
+                if (err) 
+                    throw err;
                 match.map_riders_to_drivers(riders, drivers, function(results) {
-                    con.query("INSERT INTO `Match` values (?, ?, ?, ?)", 
-                        [results.rider_id, results.driver_id, results.rider_end_point, 
-                        results.new_trip_time], function(err, riders) {
-                            if (err) throw err;
+                    console.log(2);              
+                    console.log(results);              
+                    async.each(results, function(result, callback) {
+                        con.query("INSERT INTO `Match` values (?, ?, ?, ?)", 
+                            [result.rider_id, result.driver_id, result.rider_end_point, 
+                            result.new_trip_time], function(err, extra) {
+                                if (err) 
+                                    callback(err);
+                                callback(null);
+                            });
                         });
                 });
             });

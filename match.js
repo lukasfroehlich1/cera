@@ -50,9 +50,12 @@ find_match = function(rider, driver, big_callback) {
 
                     additional_time = new_trip_time - driver.trip_time;
 
-                    callback(null, {"rider_id": rider.id, "driver_id": driver.id, "rider_end_point": end_points[i++], "new_trip_time": new_trip_time,
-                                "leave_earliest": leave_earliest,
-                                "leave_latest": leave_latest});
+                    callback(null, {"rider_id": rider.id,
+                                    "driver_id": driver.id,
+                                    "rider_end_point": end_points[i++],
+                                    "new_trip_time": new_trip_time,
+                                    "leave_earliest": leave_earliest,
+                                    "leave_latest": leave_latest});
                 }
             }
         )},
@@ -69,13 +72,13 @@ find_match = function(rider, driver, big_callback) {
       );
 }
 
-//call this asynchronously
+// returns a list of [{rider_id, driver_id, rider_end_pint, new_trip_time, leave_earliest, leave_latest },
+//                    {rider_id, driver_id, rider_end_pint, new_trip_time, leave_earliest, leave_latest },
+//                    {rider_id, driver_id, rider_end_pint, new_trip_time, leave_earliest, leave_latest }] , one per rider
 match.map_riders_to_drivers = function(riders, drivers, callback){
-    console.log("othe side " + riders);
-    console.log(riders);
 	async.map(riders, function(rider, callback1) { 
 		async.map(drivers, function(driver, callback2) {
-            console.log(rider);
+            //console.log(rider);
             find_match(rider, driver, function(results) {
                 callback2(null, results);
             })
@@ -87,7 +90,7 @@ match.map_riders_to_drivers = function(riders, drivers, callback){
 			console.log("Error: " + err);
 		}
         else {
-            callback(results);
+            callback([].concat.apply([], results));
         }
 	});
 };
