@@ -14,7 +14,7 @@ use cera;
 
 create table User (
     `id` int primary key auto_increment,
-    `username` varchar(30),
+    `username` varchar(30) unique,
     `email` varchar(100),
     `phone` varchar(12)
     -- feel free to add crap to this
@@ -27,8 +27,9 @@ create table ValidStarts (
 );
 
 create table Driver (
-    `id` int primary key,
-    constraint FKDriver_id foreign key (id) references User(id) on update cascade on delete cascade,
+    `id` int primary key auto_increment,
+    `userId` int,
+    constraint FKDriver_userId foreign key (userid) references User(id) on update cascade on delete cascade,
     `leave_earliest` Date,
     `leave_latest` Date,
     `waypoints` varchar(255),   -- if errors come up with this limit let lukas know
@@ -42,8 +43,9 @@ create table Driver (
 );
 
 create table Rider (
-    `id` int primary key,
-    constraint FKRider_id foreign key (id) references User(id) on update cascade on delete cascade,
+    `id` int primary key auto_increment,
+    `userId` int,
+    constraint FKRider_userId foreign key (userId) references User(id) on update cascade on delete cascade,
     `leave_earliest` Date,
     `leave_latest` Date,
     `startId` int,
