@@ -1,6 +1,8 @@
 var GoogleMapsAPI = require('googlemaps');
 var async = require('async');
 
+var match = module.exports = {};
+
 
 var publicConfig = {
   key: 'AIzaSyB_1bO9S2BzI5TmiQDIIVT1G-9uMbVWUd8',
@@ -120,7 +122,7 @@ find_match = function(rider, driver, big_callback) {
 }
 
 //call this asynchronously
-map_riders_to_drivers = function(riders, drivers, callback){
+match.map_riders_to_drivers = function(riders, drivers, callback){
 	async.map(riders, function(rider, callback1) { 
 		async.map(drivers, function(driver, callback2) {
             find_match(rider, driver, function(results) {
