@@ -49,18 +49,18 @@ var test_drivers1 = [ { id: 1,
   leave_earliest: 100,
   leave_latest: 200,
   waypoints: '',
-  end_point: 'Berkeley',
-  start_point: "UCLA",
+  end_point: 'Berkeley,CA',
+  start_point: "UCLA,CA",
   trip_time: 19260,
-  threshold: 9600,
+  threshold: 3600,
   price_seat: 20,
   seats: 4 } ];
 
 var test_riders1 = [ { id: 3,
   leave_earliest: 150,
   leave_latest: 160,
-  end_points: 'San Jose',
-  start_point: "UCLA"
+  end_points: 'San Jose,CA',
+  start_point: "UCLA,CA"
 }];
 
 
@@ -84,7 +84,6 @@ find_match = function(rider, driver, big_callback) {
                     console.log('Error :( -> ' + err);
                     console.log('most likely invalid location input');
                 }else {
-                    //console.log(results);
                     var new_trip_time = results.routes[0].legs.map(function (x) { 
                         return x.duration.value;
                     }).reduce(function (a, b) { return a + b; }, 0);
@@ -93,9 +92,6 @@ find_match = function(rider, driver, big_callback) {
                     console.log("driver.trip_time" + driver.trip_time);
 
                     additional_time = new_trip_time - driver.trip_time;
-
-
-
 
                     callback(null, {"driver_id": driver.id, "rider_end_point": end_points[i++], "new_trip_time": new_trip_time,
                                 "leave_earliest": Math.max(driver.leave_earliest, rider.leave_earliest), 
