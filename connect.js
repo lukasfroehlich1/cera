@@ -105,14 +105,23 @@ connect.getRider = function (riderId) {
 }
 
 connect.addRider = function (userId, leaveEarliest, leaveLatest, startId, endPoints) {
-    con.query("INSERT INTO `Rider` (id, leave_earliest, leave_latest, startId, end_points) VALUES (?, ?, ?, ?, ?)", [userId, leaveEarliest, leaveLatest, startId, endPoints], function (err, rows) {
+    con.query("SELECT * FROM Driver WHERE id = ?", [userID], function(err, rows) {
         if (err) {
             throw err;
         }
-        else {
-            console.log('Add rider success');
+        else if (rows.length <= 0) {
+            con.query("INSERT INTO `Rider` (id, leave_earliest, leave_latest, startId, end_points) VALUES (?, ?, ?, ?, ?)", [userId, leaveEarliest, leaveLatest, startId, endPoints], function (err, rows) {
+                if (err) {
+                    throw err;
+                }
+                else {
+                    console.log('Add rider success');
+                }
+            });
         }
-    });
+        else {
+            throw new Error("Cannot add Rider. Rider with id " + userId + " already a driver.");
+        }
 }  
 
 connect.deleteRider = function (riderId) {
