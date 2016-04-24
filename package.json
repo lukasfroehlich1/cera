@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/lukasfroehlich1/cera",
   "dependencies": {
+    "async": "^1.5.2",
     "cookie-parser": "^1.4.1",
     "csurf": "^1.8.3",
     "express": "^4.13.4",
