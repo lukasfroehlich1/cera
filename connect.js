@@ -38,6 +38,15 @@ connect.getUser = function () {
     });
 }
 
+connect.getUserId = function(username) {
+    con.query("SELECT * FROM `User` WHERE username = ?", [username], function(err, rows) {
+        if ( err ) throw err;
+        console.log('User: \n');
+        console.log(rows);
+        return rows.userId;
+    });
+}
+
 // Gets individual user based on id
 connect.getUser = function (userId) {
     con.query("SELECT * FROM `User` WHERE userId = ?", [userId], function (err, rows) {
@@ -122,6 +131,7 @@ connect.addRider = function (userId, leaveEarliest, leaveLatest, startId, endPoi
         else {
             throw new Error("Cannot add rider. User with id " + userId + " already a driver.");
         }
+    });
 }  
 
 connect.deleteRider = function (riderId) {
@@ -185,6 +195,7 @@ connect.addDriver = function (userId, leaveEarliest, leaveLatest, waypoints, end
         else {
             throw new Error("Cannot add driver. User with id " + userId + " already a rider.");
         }
+    });
 }  
 
 connect.deleteDriver = function (driverId) {
