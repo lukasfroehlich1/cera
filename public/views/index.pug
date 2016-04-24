@@ -50,7 +50,7 @@ html(lang="en")
                                 type="date",
                                 id="driver_departure_date"
                             )
-                            label(for="departure_date") Departure Date
+                            label(for="driver_departure_date") Departure Date
                         .input-field.col.s2
                             input(
                                 type="time",
@@ -99,28 +99,28 @@ html(lang="en")
                 form.col.s6(onsubmit="rider_submit()")
                     .row
                         .input-field.col.s2
-                            input#loc_ucsd(
+                            input#rider_loc1(
                                 name="rider_start_locs",
                                 type="radio",
                                 value="1"
                             )
-                            label(for="loc_ucsd") UCSD
+                            label(for="rider_loc1") UCSD
                             label.active Start Location
                         .input-field.col.s2
-                            input#loc_ucsb(
+                            input#rider_loc2(
                                 name="rider_start_locs",
                                 type="radio",
                                 value="2"
                             )
-                            label(for="loc_ucsb") UCSB
+                            label(for="rider_loc2") UCSB
 
                         .input-field.col.s2
-                            input#loc_slo(
+                            input#rider_loc3(
                                 name="rider_start_locs",
                                 type="radio",
                                 value="3"
                             )
-                            label(for="loc_slo") CalPoly SLO
+                            label(for="rider_loc3") CalPoly SLO
                     .row
                         .input-field.col.s6
                             input(
@@ -128,14 +128,14 @@ html(lang="en")
                                 id="rider_endpoint",
                                 type="text",
                                 class="validate")
-                            label(for="end_location") End Location
+                            label(for="rider_endpoint") End Location
                     .row
                         .input-field.col.s2
                             input.datepicker(
                                 type="date",
                                 id="rider_departure_date"
                             )
-                            label(for="departure_date") Departure Date
+                            label(for="rider_departure_date") Departure Date
                         .input-field.col.s2
                             input(
                                 type="time",

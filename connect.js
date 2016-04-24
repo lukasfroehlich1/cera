@@ -122,7 +122,8 @@ connect.addRider = function (userId, leaveEarliest, leaveLatest, startId, endPoi
                 throw err;
             }
             else {
-                console.log('Add rider success');
+                console.log('Add rider success ' + rows.id);
+                return rows.id;
             }
     });
 }
@@ -177,8 +178,8 @@ connect.addDriver = function (userId, leaveEarliest, leaveLatest, waypoints, end
             throw err;
         }
         else {
-            console.log('Add driver success');
-            console.log(rows);
+            console.log('Add driver success' + rows.id);
+            return rows.id;
         }
     });
 }  
