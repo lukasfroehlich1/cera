@@ -1,6 +1,8 @@
 var GoogleMapsAPI = require('googlemaps');
 var async = require('async');
 
+var match = module.exports = {};
+
 
 var publicConfig = {
   key: 'AIzaSyB_1bO9S2BzI5TmiQDIIVT1G-9uMbVWUd8',
@@ -77,9 +79,13 @@ find_match = function(rider, driver, big_callback) {
     var i = 0;
     async.doUntil(
         function(callback) {
-            // TODO add departure time avg of min/max times
+            var leave_earliest = Math.max(driver.leave_earliest, rider.leave_earliest);
+            var leave_latest = Math.min(driver.leave_latest, rider.leave_latest);
+
             gmAPI.directions({origin: driver.start_point, destination: driver.end_point,
-                waypoints: "optimize:true|" + (driver.waypoints + "|" + end_points[i]).split(' ').join('+')}, function(err, results) {
+                waypoints: "optimize:true|" + (driver.waypoints + "|" + end_points[i]).split(' ').join('+'),
+                departure_time: (leave_earliest + leave_latest) / 2 
+            }, function(err, results) {
                 if (err) {
                     console.log('Error :( -> ' + err);
                     console.log('most likely invalid location input');
@@ -94,8 +100,8 @@ find_match = function(rider, driver, big_callback) {
                     additional_time = new_trip_time - driver.trip_time;
 
                     callback(null, {"driver_id": driver.id, "rider_end_point": end_points[i++], "new_trip_time": new_trip_time,
-                                "leave_earliest": Math.max(driver.leave_earliest, rider.leave_earliest), 
-                                "leave_latest":Math.min(driver.leave_latest, rider.leave_latest)});
+                                "leave_earliest": leave_earliest,
+                                "leave_latest": leave_latest});
                 }
             }
         )},
@@ -104,10 +110,8 @@ find_match = function(rider, driver, big_callback) {
         },
         function(err, results){
             if (i == end_points.length && additional_time > driver.threshold) {
-                console.log("no match");
                 big_callback(false);
             } else {
-                console.log("match");
                 big_callback(results);
             }
         }
@@ -115,7 +119,7 @@ find_match = function(rider, driver, big_callback) {
 }
 
 //call this asynchronously
-map_riders_to_drivers = function(riders, drivers, callback){
+match.map_riders_to_drivers = function(riders, drivers, callback){
 	async.map(riders, function(rider, callback1) { 
 		async.map(drivers, function(driver, callback2) {
             find_match(rider, driver, function(results) {
@@ -133,9 +137,3 @@ map_riders_to_drivers = function(riders, drivers, callback){
         }
 	});
 };
-
-
-map_riders_to_drivers(test_riders1, test_drivers1, function(results) {
-    console.log("final results ");
-    console.log(results);
-});
