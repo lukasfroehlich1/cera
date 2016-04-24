@@ -3,7 +3,7 @@ insert into `User` (username, password, email, phone) values ('bobbytables', 'ab
 
 
 -- add valid stop locations
-insert into `ValidStarts` (name, coordinate) values ('UCSB', '21.40338, 19.17403');
+insert into `ValidStarts` (name, coordinate) values ('UCSB', '34.4140,-119.8489');
 insert into `ValidStarts` (name, coordinate) values ('cp', '31.40338, 3.17403');
 
 
