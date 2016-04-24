@@ -30,7 +30,7 @@ connect.end = function () {
 // User functions //
 // Gets all current users
 connect.getUser = function () {
-    con.query("SELECT * FROM User", function (err, rows) {
+    con.query("SELECT * FROM `User`", function (err, rows) {
         if (err) throw err;
         console.log('Users:\n');
         console.log(rows); 
@@ -40,7 +40,7 @@ connect.getUser = function () {
 
 // Gets individual user based on id
 connect.getUser = function (userId) {
-    con.query("SELECT * FROM User WHERE userId = ?", [userId], function (err, rows) {
+    con.query("SELECT * FROM `User` WHERE userId = ?", [userId], function (err, rows) {
         if (err) throw err;
         console.log('User:\n');
         console.log(rows);
@@ -61,7 +61,7 @@ connect.addUser = function (username, email, phone) {
 }
 
 connect.deleteUser = function (userId) {
-    con.query("DELETE FROM User WHERE id = ?", [userId],  function (err, rows) {
+    con.query("DELETE FROM `User` WHERE id = ?", [userId],  function (err, rows) {
         if (err) {
             throw err;
         }
@@ -72,7 +72,7 @@ connect.deleteUser = function (userId) {
 }
 
 connect.updateUser = function (userId, username, email, phone) {
-    con.query("UPDATE User SET username = ?, email = ?, phone = ? WHERE id = ?", [username, email, phone, userId],
+    con.query("UPDATE `User` SET username = ?, email = ?, phone = ? WHERE id = ?", [username, email, phone, userId],
     function (err, rows) {
         if (err) {
             throw err;
@@ -83,6 +83,58 @@ connect.updateUser = function (userId, username, email, phone) {
     });
 }
 
-// Rider functions
+// Rider functions //
+// Gets all current riders
+connect.getRider = function () {
+    con.query("SELECT * FROM `Rider`", function (err, rows) {
+        if (err) throw err;
+        console.log('Riders:\n');
+        console.log(rows); 
+        return rows;
+    });
+}
+
+// Gets rider given id
+connect.getRider = function (riderId) {
+    con.query("SELECT * FROM `Rider` WHERE id = ?", [riderId], function (err, rows) {
+        if (err) throw err;
+        console.log('Rider:\n');
+        console.log(rows); 
+        return rows;
+    });
+}
+
+connect.addRider = function (userId, leaveEarliest, leaveLatest, startId, endPoints) {
+    con.query("INSERT INTO `Rider` (id, leave_earliest, leave_latest, startId, end_points) VALUES (?, ?, ?, ?, ?)", [userId, leaveEarliest, leaveLatest, startId, endPoints], function (err, rows) {
+        if (err) {
+            throw err;
+        }
+        else {
+            console.log('Add rider success');
+        }
+    });
+}  
+
+connect.deleteRider = function (riderId) {
+    con.query("DELETE FROM `Rider` WHERE id = ?", [riderId], function (err, rows) {
+        if (err) {
+            throw err;
+        }
+        else {
+            console.log('Delete rider success');
+        } 
+    });
+}
+
+connect.updateRider = function (userId, leaveEarliest, leaveLatest, startId, endPoints) {
+    con.query("UPDATE `Rider` SET leave_earliest = ?, leave_latest = ?, startId = ?, end_points = ?, phone = ? RE id = ?", [leaveEarliest, leaveLatest, startId, endPoints, riderId], function (err, rows) {
+        if (err) {
+            throw err;
+        }
+        else {
+            console.log('Update rider success');
+        }
+    });
+}
 
 // Driver functions
