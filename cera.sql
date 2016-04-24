@@ -65,7 +65,7 @@ create table Bond (
 );
 
 create table `Match` (
-    `id` int primary key,
+    `id` int,
     constraint FKMatch_riderId foreign key (id) references Rider(id) on delete cascade on update cascade,
     `driverId` int,
     constraint FKMatch_driverId foreign key (driverId) references Driver(id) on delete cascade on update cascade,
@@ -74,7 +74,7 @@ create table `Match` (
 );
 
 
-insert into `ValidStarts` (name, coordinate) values ('UCSD', ' 32.8801,-117.2340');
+insert into `ValidStarts` (name, coordinate) values ('UCSD', '32.8801,-117.2340');
 insert into `ValidStarts` (name, coordinate) values ('UCSB', '34.4140,-119.8489');
 insert into `ValidStarts` (name, coordinate) values ('CP', '35.3050,-120.6625');
 

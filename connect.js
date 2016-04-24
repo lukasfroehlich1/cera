@@ -322,15 +322,15 @@ connect.update_matches = function() {
                 if (err) 
                     throw err;
                 match.map_riders_to_drivers(riders, drivers, function(results) {
-                    console.log(2);              
-                    console.log(results);              
+                    console.log('ay');              
                     async.each(results, function(result, callback) {
                         con.query("INSERT INTO `Match` values (?, ?, ?, ?)", 
                             [result.rider_id, result.driver_id, result.rider_end_point, 
                             result.new_trip_time], function(err, extra) {
-                                if (err) 
-                                    callback(err);
-                                callback(null);
+
+                                if (err) {
+                                    throw err;
+                                }
                             });
                         });
                 });
@@ -338,3 +338,5 @@ connect.update_matches = function() {
         });
     });
 }
+
+connect.update_matches();
