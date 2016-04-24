@@ -103,7 +103,7 @@ function driver_submit() {
             end_point : $("#driver_endpoint").val(),
             price_seat : $("#driver_price_seat").val(),
             seats : $("#driver_seats").val(),
-            threshold : $("#driver_threshold").val(),
+            threshold : parseInt($("#driver_threshold").val()) * 60,
         },
         success: function(data, stat) {
         }

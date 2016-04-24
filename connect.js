@@ -279,11 +279,23 @@ connect.updateDriver = function (driverId, leaveDate, leaveEarliest, leaveLatest
 
 
 
-connect.get_matches = function(riderId) {
+connect.get_matches_rider = function(riderId, callback) {
     con.query("SELECT * FROM `Match` WHERE id = ?", [riderId], function(err, rows) { 
-        if ( err ) throw err;
-        console.log("Requesting matches");
-        return rows;
+        console.log("Requesting matches for rider " + riderId);
+        if ( err )
+            callback(err);
+        else
+            callback(null, rows);
+    });
+}
+
+connect.get_matches_driver = function(driverId, callback) {
+    con.query("SELECT * FROM `Match` WHERE driverId = ?", [driverId], function(err, rows) { 
+        console.log("Requesting matches for driver " + driverId);
+        if ( err )
+            callback(err);
+        else
+            callback(null, rows);
     });
 }
 
