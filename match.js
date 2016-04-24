@@ -49,23 +49,23 @@ var test_drivers1 = [ { id: 1,
   leave_earliest: 100,
   leave_latest: 200,
   waypoints: '',
-  end_point: 'UC Santa Barbara',
-  start_point: "UCSD",
-  trip_time: 3600,
-  threshold: 12000,
+  end_point: 'Berkeley',
+  start_point: "UCLA",
+  trip_time: 19260,
+  threshold: 9600,
   price_seat: 20,
   seats: 4 } ];
 
 var test_riders1 = [ { id: 3,
   leave_earliest: 150,
   leave_latest: 160,
-  end_points: 'Irvine',
-  start_point: "UCSD"
+  end_points: 'San Jose',
+  start_point: "UCLA"
 }];
+
 
 find_match = function(rider, driver, big_callback) {
     var end_points = rider.end_points.split("|");
-
 
     if (driver.start_point != rider.start_point || driver.leave_earliest > rider.leave_latest
             || driver.leave_latest < rider.leave_earliest) {
@@ -79,13 +79,24 @@ find_match = function(rider, driver, big_callback) {
         function(callback) {
             // TODO add departure time avg of min/max times
             gmAPI.directions({origin: driver.start_point, destination: driver.end_point,
-                waypoints: "optimize:true|" + driver.waypoints + "|" + end_points[i]}, function(err, results) {
+                waypoints: "optimize:true|" + (driver.waypoints + "|" + end_points[i]).split(' ').join('+')}, function(err, results) {
                 if (err) {
                     console.log('Error :( -> ' + err);
+                    console.log('most likely invalid location input');
                 }else {
                     //console.log(results);
-                    var new_trip_time = results.routes[0].legs[0].duration.value;
+                    var new_trip_time = results.routes[0].legs.map(function (x) { 
+                        return x.duration.value;
+                    }).reduce(function (a, b) { return a + b; }, 0);
+
+                    console.log("new_trip_time " + new_trip_time);
+                    console.log("driver.trip_time" + driver.trip_time);
+
                     additional_time = new_trip_time - driver.trip_time;
+
+
+
+
                     callback(null, {"driver_id": driver.id, "rider_end_point": end_points[i++], "new_trip_time": new_trip_time,
                                 "leave_earliest": Math.max(driver.leave_earliest, rider.leave_earliest), 
                                 "leave_latest":Math.min(driver.leave_latest, rider.leave_latest)});
