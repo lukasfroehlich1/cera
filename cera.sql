@@ -30,8 +30,8 @@ create table Driver (
     `id` int primary key auto_increment,
     `userId` int,
     constraint FKDriver_userId foreign key (userid) references User(id) on update cascade on delete cascade,
-    `leave_earliest` Date,
-    `leave_latest` Date,
+    `leave_earliest` Timestamp,
+    `leave_latest` Timestamp,
     `waypoints` varchar(255),   -- if errors come up with this limit let lukas know
     `end_point` varchar(30),
     `startId` int,
@@ -46,8 +46,8 @@ create table Rider (
     `id` int primary key auto_increment,
     `userId` int,
     constraint FKRider_userId foreign key (userId) references User(id) on update cascade on delete cascade,
-    `leave_earliest` Date,
-    `leave_latest` Date,
+    `leave_earliest` Timestamp,
+    `leave_latest` Timestamp,
     `startId` int,
     constraint FKRider_startId foreign key (startId) references ValidStarts(id) on update cascade,
     `end_points` varchar(100)
