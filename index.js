@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var parser = require('body-parser');
 var api = require('./connect');
+
 app.set('view engine', 'pug');
 
 app.set('views', __dirname+'/public/views');
@@ -19,7 +20,8 @@ app.get('/', function (req, res) {
 
 app.post('/drivers', function(req, res) {
     var packet = req.body;
-    api.addUser("origami", "tjw001@ucsd.edu", "8585858585");
+
+    api.addDriver(1, packet.earliest_leave, packet.latest_leave, "", packet.end_point, parseInt(packet.startId), packet.threshold, packet.price_seat, packet.seats);
 
     console.log(api.getUserId("origami"));
     api.addDriver(packet.earliest_leave, packet.latest_leave, "", packet.end_point, packet.startId, packet.threshold, packet.price_seat, packet.seats);

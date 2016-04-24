@@ -13,6 +13,15 @@ $(function() {
         }, 1);
     }); 
 
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var showTab = $(e.target).attr("href") // activated tab
+        var hideTab = $(e.target).attr("name") // activated tab
+        console.log(showTab);
+        console.log(hideTab);
+        $(showTab).show()
+        $(hideTab).hide()
+    });
+
     $('select').material_select();
 }); 
 
@@ -22,7 +31,7 @@ function driver_submit() {
         method: "POST",
         dataType:"json",
         data: {
-            startId : $("input[name=start_locs]:checked").val(),
+            startId : $("input[name=driver_start_locs]:checked").val(),
             leave_earliest : $("#driver_leave_earliest").val(),
             leave_latest : $("#driver_leave_latest").val(),
             end_point : $("#driver_endpoint").val(),
