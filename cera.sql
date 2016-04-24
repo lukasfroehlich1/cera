@@ -72,3 +72,10 @@ create table `Match` (
 	rider_end_point varchar(30),
 	new_trip_time int
 );
+
+
+insert into `ValidStarts` (name, coordinate) values ('UCSD', ' 32.8801,-117.2340');
+insert into `ValidStarts` (name, coordinate) values ('UCSB', '34.4140,-119.8489');
+insert into `ValidStarts` (name, coordinate) values ('CP', '35.3050,-120.6625');
+
+
