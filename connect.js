@@ -203,11 +203,11 @@ connect.getDriver = function (driverId) {
     });
 }
 
-connect.addDriver = function (userId, leaveEarliest, leaveLatest, waypoints, endPoint, startId, threshold, priceSeat, seat) {
+connect.addDriver = function (userId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoint, startId, threshold, priceSeat, seat) {
     connect.calculate_trip_time(startId, endPoint, function(result){
         var trip_time = result; 
-        con.query("INSERT INTO `Driver` (userId, leave_earliest, leave_latest, waypoints, end_point, startId, trip_time, threshold, price_seat, seats) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [userId, leaveEarliest, leaveLatest, waypoints, endPoint, startId, trip_time, threshold, priceSeat, seat], function (err, rows) {
+        con.query("INSERT INTO `Driver` (userId, leave_date, leave_earliest, leave_latest, waypoints, end_point, startId, trip_time, threshold, price_seat, seats) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [userId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoint, startId, trip_time, threshold, priceSeat, seat], function (err, rows) {
             if (err) {
                 throw err;
             }
@@ -230,8 +230,9 @@ connect.deleteDriver = function (driverId) {
     });
 }
 
-connect.updateDriver = function (driverId, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat) {
-    con.query("UPDATE `Driver` SET leave_earliest = ?, leave_latest = ?, waypoint = ?, end_points = ?, startId = ?, threshold = ?, price_seat = ?, seat = ? WHERE id = ?", [leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat, driverId], function (err, rows) {
+connect.updateDriver = function (driverId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat) {
+    con.query("UPDATE `Driver` SET leave_date = ?, leave_earliest = ?, leave_latest = ?, waypoint = ?, end_points = ?, startId = ?, threshold = ?, price_seat = ?, seat = ? WHERE id = ?", 
+            [leaveDate, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat, driverId], function (err, rows) {
         if (err) {
             throw err;
         }
@@ -240,4 +241,4 @@ connect.updateDriver = function (driverId, leaveEarliest, leaveLatest, waypoints
         }
     });
 }
-connect.addDriver(2,"15:04","17:20","","UCLA",2,500,20,5);
+connect.addDriver(2,"2016-04-05","15:04","17:20","","UCLA",2,500,20,5);
