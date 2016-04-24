@@ -13,7 +13,7 @@ insert into `ValidStarts` (name, coordinate) values ('cp', '31.40338, 3.17403');
 -- takes a user id 
 -- select * from Rider where 'input_id' = id
 
-insert into `Driver` values (1, timestamp('2016-05-06 11:23:34'), timestamp('2016-05-07 11:23:34'), '41.40338,2.17403|41.40338,2.17403', '61.40338,3.17403', 1, 3600, 1200, 20, 4);
+insert into `Driver` (userId, leave_earliest, leave_latest, waypoints, end_point, startId, trip_time, threshold, price_seat, seats) values (1, timestamp('2016-05-06 11:23:34'), timestamp('2016-05-07 11:23:34'), '41.40338,2.17403|41.40338,2.17403', '61.40338,3.17403', 1, 3600, 1200, 20, 4);
 
 
 -- make jwu a rider
@@ -22,6 +22,6 @@ insert into `Driver` values (1, timestamp('2016-05-06 11:23:34'), timestamp('201
 -- takes a user id 
 -- select * from Driver where 'jwu_id' = id
 
-insert into `Rider` values (2, timestamp('2016-05-06 12:23:34'), timestamp('2016-05-08 11:23:34'), 1, '41.40338,2.17403|41.40338,2.17403');
+insert into `Rider` (userId, leave_earliest, leave_latest, startId, end_points) values (2, timestamp('2016-05-06 12:23:34'), timestamp('2016-05-08 11:23:34'), 1, '41.40338,2.17403|41.40338,2.17403');
 
 
