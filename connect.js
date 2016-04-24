@@ -1,4 +1,6 @@
 var mysql = require('mysql');
+var GoogleMapsAPI = require('googlemaps');
+var async = require('async');
 var connect = module.exports = {};
 
 var con = mysql.createConnection({
@@ -7,6 +9,15 @@ var con = mysql.createConnection({
     password: "sbhacksadmin",
     database: "cera"
 });
+
+var publicConfig = {
+  key: 'AIzaSyB_1bO9S2BzI5TmiQDIIVT1G-9uMbVWUd8',
+  stagger_time:       1000, // for elevationPath
+  encode_polylines:   false,
+  secure:             true, // use https
+};
+
+var gmAPI = new GoogleMapsAPI(publicConfig);
 
 connect.start = function () {
     con.connect(function (err) {
@@ -92,6 +103,28 @@ connect.updateUser = function (userId, username, email, phone) {
     });
 }
 
+// Calculate the trip time
+connect.calculate_trip_time = function (startId, endPoint, callback) {
+    con.query("SELECT coordinate FROM `ValidStarts` WHERE id = ?", [startId], function(err, rows) { 
+        if ( err )
+            throw err;
+        startPoint = rows[0]["coordinate"];
+        gmAPI.directions({origin: startPoint, destination: endPoint}, function(err, results) {
+                    if (err) {
+                        console.log('Error :( -> ' + err);
+                        console.log('most likely invalid location input');
+                    }else {
+                        //console.log(startPoint);
+                        //console.log(results);
+                        var new_trip_time = results.routes[0].legs.map(function (x) { 
+                            return x.duration.value;
+                        }).reduce(function (a, b) { return a + b; }, 0);
+                        callback(new_trip_time);
+                    }
+                });
+        });
+}
+
 // Rider functions //
 // Gets all current riders
 connect.getRider = function () {
@@ -170,16 +203,19 @@ connect.getDriver = function (driverId) {
     });
 }
 
-connect.addDriver = function (userId, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat) {
-    con.query("INSERT INTO `Driver` (userId, leave_earliest, leave_latest, waypoints, end_point, startId, threshold, price_seat, seats) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [userId, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat], function (err, rows) {
-        if (err) {
-            throw err;
-        }
-        else {
-            console.log('Add driver success');
-            console.log(rows);
-        }
+connect.addDriver = function (userId, leaveEarliest, leaveLatest, waypoints, endPoint, startId, threshold, priceSeat, seat) {
+    connect.calculate_trip_time(startId, endPoint, function(result){
+        var trip_time = result; 
+        con.query("INSERT INTO `Driver` (userId, leave_earliest, leave_latest, waypoints, end_point, startId, trip_time, threshold, price_seat, seats) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [userId, leaveEarliest, leaveLatest, waypoints, endPoint, startId, trip_time, threshold, priceSeat, seat], function (err, rows) {
+            if (err) {
+                throw err;
+            }
+            else {
+                console.log('Add driver success');
+                console.log(rows);
+            }
+        });
     });
 }  
 
@@ -204,3 +240,4 @@ connect.updateDriver = function (driverId, leaveEarliest, leaveLatest, waypoints
         }
     });
 }
+connect.addDriver(2,"15:04","17:20","","UCLA",2,500,20,5);
