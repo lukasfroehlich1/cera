@@ -14,6 +14,12 @@ $(function() {
                 password: $("#password").val()
             },
             success: function(data, stat) {
+                if (data.code == 1 ) {
+                    window.location.href = data.url;
+                }
+                else {
+                    alert("Username and Password do not match");
+                }
             }
         });
     });
@@ -30,6 +36,12 @@ $(function() {
                 phone: $("#phone").val()
             },
             success: function(data, stat) {
+                if (data.code == 1 ) {
+                    window.location.href = data.url;
+                }
+                else {
+                    alert("Username already exists");
+                }
             }
         });
     });
@@ -53,11 +65,11 @@ $(function() {
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var showTab = $(e.target).attr("href") // activated tab
-        var hideTab = $(e.target).attr("name") // activated tab
-        console.log(showTab);
-        console.log(hideTab);
+        var hideTab1 = $(e.target).attr("other1") // activated tab
+        var hideTab2 = $(e.target).attr("other2") // activated tab
         $(showTab).show()
-        $(hideTab).hide()
+        $(hideTab1).hide()
+        $(hideTab2).hide()
     });
 }); 
 
@@ -67,6 +79,7 @@ function rider_submit() {
         method: "POST",
         dataType:"json",
         data: {
+            userId : $("#userId").val(),
             startId : $("input[name=rider_start_locs]:checked").val(),
             departure_date : $("#rider_departure_date").val(),
             leave_earliest : $("#rider_leave_earliest").val(),
@@ -76,15 +89,13 @@ function rider_submit() {
     });
 }
 
-function login() {
-}
-
 function driver_submit() {
     $.ajax({
         url: "/drivers",
         method: "POST",
         dataType:"json",
         data: {
+            userId : $("#userId").val(),
             startId : $("input[name=driver_start_locs]:checked").val(),
             leave_earliest : $("#driver_leave_earliest").val(),
             leave_latest : $("#driver_leave_latest").val(),

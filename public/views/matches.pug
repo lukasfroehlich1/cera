@@ -4,33 +4,9 @@ html(lang="en")
     body
         .container
             .row
-                .col.s12
-                    .card.blue-grey.darken-1
-                        .card-content.white-text
-                            span.card-title
-                                h4 Match
-                            .row
-                                .col.s6
-                                    h5 Driver Information
-                                    table
-                                        tbody
-                                            tr
-                                                td.table_title Name
-                                                td.table_info Michael Cera
-                                            tr
-                                                td.table_title Contact Information
-                                                td.table_info Emails
-                                            tr
-                                                td.table_title Departure Time
-                                                td.table_info 4/20/16 4:00pm - 8:00pm
-                                            tr
-                                                td.table_title Price
-                                                td.table_info $50
-                                .col.s6
-                                    h5 Map
-                                    #map(style="width:500px; height:500px")
-                                        script(src="/js/map_scripts.js")
-                                        script(async, defer, src='https://maps.googleapis.com/maps/api/js?key=AIzaSyA3OTxTo2wghKepaGkULcVk9POnY_CyI38&callback=initMap', type="text/javascript")
-                        .card-action
-                            a Request 
-                            a Skip
+                .col.s4
+                    ul.collection.with-header
+                        li.collection-header
+                            h3 Matches
+                .col.s8
+                    include ./match_card.pug
