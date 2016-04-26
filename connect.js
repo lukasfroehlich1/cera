@@ -8,7 +8,8 @@ var con = mysql.createConnection({
     host: "west-mysql-instance1.cxihylgafwaw.us-west-1.rds.amazonaws.com",
     user: "root",
     password: "sbhacksadmin",
-    database: "cera"
+    database: "cera",
+    multipleStatements: true
 });
 
 var publicConfig = {
@@ -289,9 +290,6 @@ connect.updateDriver = function (driverId, leaveDate, leaveEarliest, leaveLatest
     });
 }
 
-//connect.addDriver(2,"5 April, 2016","15:04","17:20","","UCLA",2,500,20,5);
-
-
 connect.get_matches_rider = function(riderId, callback) {
     con.query("SELECT * FROM `Match` WHERE id = ?", [riderId], function(err, rows) { 
         console.log("Requesting matches for rider " + riderId);
@@ -338,5 +336,3 @@ connect.update_matches = function() {
         });
     });
 }
-
-connect.update_matches();

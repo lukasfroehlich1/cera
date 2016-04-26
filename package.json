@@ -19,6 +19,7 @@
   "dependencies": {
     "async": "^2.0.0-rc.3",
     "body-parser": "^1.15.0",
+    "chai": "^3.5.0",
     "cookie-parser": "^1.4.1",
     "csurf": "^1.8.3",
     "express": "^4.13.4",
@@ -26,6 +27,7 @@
     "forms": "^1.1.4",
     "googlemaps": "^1.4.0",
     "materialize-css": "^0.97.6",
+    "mocha": "^2.4.5",
     "mysql": "^2.10.2",
     "pug": "^2.0.0-alpha6"
   }
