@@ -4,7 +4,8 @@
   "description": "ride sharing application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "pretest": "tsc test/*Test.ts",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,11 @@
     "materialize-css": "^0.97.6",
     "mocha": "^2.4.5",
     "mysql": "^2.10.2",
-    "pug": "^2.0.0-alpha6"
+    "pug": "^2.0.0-alpha6",
+    "typescript": "^1.8.10"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
   }
 }
