@@ -37,10 +37,11 @@ function find_match(rider, driver, find_match_callback) {
             destination: driver.end_point.toString(),
             waypoints: "optimize:true|" +
                 (driver.stringify_waypoints() + "|" +
-                    rider.end_points[i].toString())
+                    rider.end_points[i].toString()),
+            departure_time: (leave_earliest + leave_latest) / 2
         }, function (err, results) {
             if (err) {
-                console.log("Error: this end point is being ignored:", rider.end_points[i]);
+                console.log("Error: end point being ignored:", rider.end_points[i]);
                 console.log(err);
                 i++;
                 // not raising an error just quietly ignoring 
@@ -62,6 +63,10 @@ function find_match(rider, driver, find_match_callback) {
         if (err) {
             find_match_callback(err, null);
         }
+        else if (i == rider.end_points.length &&
+            additional_time > driver.threshold) {
+            find_match_callback(null, null);
+        }
         else {
             find_match_callback(null, results);
         }
@@ -69,6 +74,8 @@ function find_match(rider, driver, find_match_callback) {
 }
 ;
 function map_riders_to_drivers(riders, drivers, map_callback) {
+    console.log("Trying to match riders and drivers...");
+    console.log("Matching " + riders.length + " rider(s) and " + drivers.length + " driver(s)");
     async.map(riders, function (rider, callback1) {
         async.map(drivers, function (driver, callback2) {
             find_match(rider, driver, function (err, results) {
@@ -85,11 +92,13 @@ function map_riders_to_drivers(riders, drivers, map_callback) {
         });
     }, function (err, results) {
         if (err) {
+            console.log("Error: " + err);
             map_callback(err, null);
         }
         else {
-            results = [].concat.apply([], results);
-            map_callback(null, results);
+            var flat = [].concat.apply([], results);
+            console.log("Found " + flat.length + " match(es)");
+            map_callback(null, flat);
         }
     });
 }

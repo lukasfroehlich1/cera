@@ -1,6 +1,7 @@
 import {Rider, Driver, Match, Traveler, Time} from "./class_defs";
 
 declare function require(name: string);
+
 var GoogleMapsAPI = require('googlemaps');
 var async = require('async');
 
@@ -48,11 +49,11 @@ function find_match(rider: Rider, driver: Driver,
             destination: driver.end_point.toString(),
             waypoints: "optimize:true|" + 
                 (driver.stringify_waypoints() + "|" + 
-                 rider.end_points[i].toString()),
-            departure_time: (leave_earliest + leave_latest) / 2
+                 rider.end_points[i].toString())
+            //departure_time: (leave_earliest + leave_latest) / 2
         }, function (err, results) {
             if (err) {
-                console.log("Error: end point being ignored:", rider.end_points[i]);
+                console.log("Error: this end point is being ignored:", rider.end_points[i]);
                 console.log(err);
                 i++;
                 // not raising an error just quietly ignoring 
@@ -81,10 +82,6 @@ function find_match(rider: Rider, driver: Driver,
         if (err) {
             find_match_callback(err, null);
         }
-        else if (i == rider.end_points.length && 
-                 additional_time > driver.threshold) {
-            find_match_callback(null, null);
-        }
         else {
             find_match_callback(null, results);
         }
@@ -92,13 +89,9 @@ function find_match(rider: Rider, driver: Driver,
 };
 
 
-
 export function map_riders_to_drivers(riders: Array<Rider>, 
                                       drivers: Array<Driver>, 
                                       map_callback: (err: any, res: Array<Match>) => any) {
-    console.log("Trying to match riders and drivers...");
-    console.log("Matching " + riders.length + " rider(s) and " + drivers.length + " driver(s)");
-
     async.map(riders, 
               function (rider: Rider, 
                         callback1: (err: any, res: Array<Match>) => any) {
@@ -118,13 +111,11 @@ export function map_riders_to_drivers(riders: Array<Rider>,
         });
     }, function (err, results) {
         if (err) {
-            console.log("Error: " + err);
             map_callback(err, null);
         }
         else {
-            var flat = [].concat.apply([], results);
-            console.log("Found " + flat.length + " match(es)");
-            map_callback(null, flat);
+            results = [].concat.apply([], results);
+            map_callback(null, results);
         }
     });
 };

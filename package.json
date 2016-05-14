@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "ride sharing application",
   "main": "index.js",
+  "outDir": "build",
   "scripts": {
     "pretest": "tsc test/*Test.ts",
     "test": "mocha"
