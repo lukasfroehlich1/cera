@@ -16,6 +16,33 @@ function same_date(rider, driver) {
         r.getMonth() == d.getMonth() &&
         r.getDate() == d.getDate();
 }
+;
+function valid_trips(driver, rider, this_endpoint, callback) {
+    var rider_leave_earliest = rider.leave_earliest.getMinutes();
+    var rider_leave_latest = rider.leave_latest.getMinutes();
+    var driver_leave_earliest = driver.leave_earliest.getMinutes();
+    var driver_leave_latest = driver.leave_latest.getMinutes();
+    var leave_earliest = Math.max(rider_leave_earliest, driver_leave_earliest);
+    var leave_latest = Math.min(rider_leave_latest, driver_leave_latest);
+    gmAPI.directions({
+        origin: driver.start_point.toString(), destination: driver.end_point.toString(),
+        waypoints: "optimize:true|" + (driver.stringify_waypoints() + "|" +
+            this_endpoint.toString()) }, function (err, results) {
+        if (err)
+            callback(null, null); // treating errors as failed distances
+        // i expect invalid locations. This may be reworked in the future
+        var new_trip_time = results.routes[0].legs.map(function (x) {
+            return x.duration.value;
+        }).reduce(function (a, b) { return a + b; }, 0);
+        if (driver.threshold >= new_trip_time - driver.trip_time) {
+            callback(null, new class_defs_1.Match(rider.id, driver.id, this_endpoint, new_trip_time, rider.leave_date, new class_defs_1.Time(leave_earliest), new class_defs_1.Time(leave_latest)));
+        }
+        else {
+            callback(null, null);
+        }
+    });
+}
+;
 function find_match(rider, driver, find_match_callback) {
     var rider_leave_earliest = rider.leave_earliest.getMinutes();
     var rider_leave_latest = rider.leave_latest.getMinutes();
@@ -27,44 +54,13 @@ function find_match(rider, driver, find_match_callback) {
         driver_leave_latest <= rider_leave_earliest) {
         find_match_callback(null, null);
     }
-    var i = 0;
-    var leave_earliest = Math.max(rider_leave_earliest, driver_leave_earliest);
-    var leave_latest = Math.min(rider_leave_latest, driver_leave_latest);
-    var additional_time;
-    async.doUntil(function (callback) {
-        gmAPI.directions({
-            origin: driver.start_point.toString(),
-            destination: driver.end_point.toString(),
-            waypoints: "optimize:true|" +
-                (driver.stringify_waypoints() + "|" +
-                    rider.end_points[i].toString())
-        }, function (err, results) {
-            if (err) {
-                console.log("Error: this end point is being ignored:", rider.end_points[i]);
-                console.log(err);
-                i++;
-                // not raising an error just quietly ignoring 
-                additional_time = driver.threshold + 1;
-                callback(null, null);
-            }
-            else {
-                var new_trip_time = results.routes[0].legs.map(function (x) {
-                    return x.duration.value;
-                }).reduce(function (a, b) { return a + b; }, 0);
-                additional_time = new_trip_time - driver.trip_time;
-                callback(null, new class_defs_1.Match(rider.id, driver.id, rider.end_points[i++], new_trip_time, rider.leave_date, new class_defs_1.Time(leave_earliest), new class_defs_1.Time(leave_latest)));
-            }
-        });
-    }, function () {
-        return additional_time <= driver.threshold ||
-            i == rider.end_points.length;
-    }, function (err, results) {
-        if (err) {
+    async.map(rider.end_points, function (x, callback) { valid_trips(driver, rider, x, callback); }, function (err, res) {
+        if (err)
             find_match_callback(err, null);
-        }
-        else {
-            find_match_callback(null, results);
-        }
+        for (var i = 0; i < res.length; i++)
+            if (res[i])
+                break;
+        find_match_callback(null, res[i]);
     });
 }
 ;

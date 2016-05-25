@@ -32,10 +32,13 @@
     "mocha": "^2.4.5",
     "mysql": "^2.10.2",
     "pug": "^2.0.0-alpha6",
-    "typescript": "^1.8.10"
+    "typescript": "^1.8.10",
+    "typescript-eslint-parser": "0.1.0-alpha-1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "eslint": "^2.10.2",
+    "eslint-config-google": "^0.5.0",
     "mocha": "^2.4.5"
   }
 }
