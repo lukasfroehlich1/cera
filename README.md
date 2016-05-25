@@ -1,11 +1,10 @@
 # cera
-Ride share platform
+Ride sharing platform for facebook ride share pages.
 
-
-# how to set up repository and start running
-#
-# this will install all dependencies and run the wsgi
-npm install
-node index.js
-
-
+# Installation  
+Install [node.js and npm](https://docs.npmjs.com/getting-started/what-is-npm).  
+Clone this repository and in the repo run:  
+`npm install`  
+# Running
+In order to start the server run in the root directory of the repo:  
+`node index.js`  
