@@ -4,6 +4,7 @@
   "description": "ride sharing application",
   "main": "index.js",
   "scripts": {
+    "build": "tsc app/*.ts",
     "pretest": "tsc test/*Test.ts",
     "test": "mocha"
   },
