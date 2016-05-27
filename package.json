@@ -4,9 +4,10 @@
   "description": "ride sharing application",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "pretest": "npm run build",
-    "test": "mocha"
+    "lint": "jshint **.js",
+    "build": "tsc && npm run lint",
+    "test": "mocha",
+    "pretest": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -35,7 +36,8 @@
     "typescript": "^1.8.10"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^2.4.5"
+    "chai": "latest",
+    "jshint": "latest",
+    "mocha": "latest"
   }
 }
