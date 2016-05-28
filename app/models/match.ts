@@ -2,21 +2,21 @@ import {Rider, Driver, Coordinate, Match, Time} from "./class_defs";
 
 declare function require(name: string);
 
-var GoogleMapsAPI = require('googlemaps');
-var async = require('async');
+let GoogleMapsAPI = require('googlemaps');
+let async = require('async');
 
-var publicConfig = {
+let publicConfig = {
     key: 'AIzaSyB_1bO9S2BzI5TmiQDIIVT1G-9uMbVWUd8',
     stagger_time: 1000,
     encode_polylines: false,
     secure: true
 };
 
-var gmAPI = new GoogleMapsAPI(publicConfig);
+let gmAPI = new GoogleMapsAPI(publicConfig);
 
 function same_date(rider: Rider, driver: Driver): boolean {
-    var r = rider.leave_date;
-    var d = driver.leave_date;
+    let r = rider.leave_date;
+    let d = driver.leave_date;
 
     return r.getFullYear() == d.getFullYear() &&
            r.getMonth() == d.getMonth() &&
@@ -26,14 +26,14 @@ function same_date(rider: Rider, driver: Driver): boolean {
 
 function valid_trips(driver: Driver, rider: Rider, this_endpoint: Coordinate,
                      callback: (err: any, res: Match) => any) {
-        var rider_leave_earliest = rider.leave_earliest.getMinutes();
-        var rider_leave_latest = rider.leave_latest.getMinutes();
+        let rider_leave_earliest = rider.leave_earliest.getMinutes();
+        let rider_leave_latest = rider.leave_latest.getMinutes();
 
-        var driver_leave_earliest = driver.leave_earliest.getMinutes();
-        var driver_leave_latest = driver.leave_latest.getMinutes();
+        let driver_leave_earliest = driver.leave_earliest.getMinutes();
+        let driver_leave_latest = driver.leave_latest.getMinutes();
 
-        var leave_earliest = Math.max(rider_leave_earliest, driver_leave_earliest);
-        var leave_latest = Math.min(rider_leave_latest, driver_leave_latest);
+        let leave_earliest = Math.max(rider_leave_earliest, driver_leave_earliest);
+        let leave_latest = Math.min(rider_leave_latest, driver_leave_latest);
 
         gmAPI.directions({ 
             origin: driver.start_point.toString(), destination: driver.end_point.toString(),
@@ -47,7 +47,7 @@ function valid_trips(driver: Driver, rider: Rider, this_endpoint: Coordinate,
                 callback(null, null);   // treating errors as failed distances
                                         // i expect invalid locations. This may be reworked in the future
 
-            var new_trip_time = results.routes[0].legs.map(function (x) {
+            let new_trip_time = results.routes[0].legs.map(function (x) {
                 return x.duration.value;
             }).reduce(function (a, b) { return a + b; }, 0);
 
@@ -66,11 +66,11 @@ function valid_trips(driver: Driver, rider: Rider, this_endpoint: Coordinate,
 
 function find_match(rider: Rider, driver: Driver,
                     find_match_callback: (err: any, res: Match) => any): void {
-    var rider_leave_earliest = rider.leave_earliest.getMinutes();
-    var rider_leave_latest = rider.leave_latest.getMinutes();
+    let rider_leave_earliest = rider.leave_earliest.getMinutes();
+    let rider_leave_latest = rider.leave_latest.getMinutes();
 
-    var driver_leave_earliest = driver.leave_earliest.getMinutes();
-    var driver_leave_latest = driver.leave_latest.getMinutes();
+    let driver_leave_earliest = driver.leave_earliest.getMinutes();
+    let driver_leave_latest = driver.leave_latest.getMinutes();
 
     if (!driver.start_point.equals(rider.start_point) || 
         !same_date(rider, driver) ||
@@ -87,7 +87,7 @@ function find_match(rider: Rider, driver: Driver,
         if (err)
             find_match_callback(err, null);
 
-        for (var i = 0; i < res.length; i++)
+        for (let i = 0; i < res.length; i++)
             if (res[i])
                 break
 
