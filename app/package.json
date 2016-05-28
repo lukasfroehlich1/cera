@@ -4,9 +4,9 @@
   "description": "ride sharing application",
   "main": "index.js",
   "scripts": {
-    "lint": "jshint ../**.js",
-    "build": "tsc && npm run lint",
+    "build": "tsc",
     "test": "mocha",
+    "clean": "rm -rf node_modules && npm install rm -rf typings && typings install",
     "pretest": "npm run build"
   },
   "repository": {

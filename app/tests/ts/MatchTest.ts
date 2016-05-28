@@ -1,5 +1,5 @@
-/// <reference path="../../typings/globals/mocha/mocha.d.ts" />
-/// <reference path="../../typings/globals/chai/chai.d.ts" />
+/// <reference path="../../typings/globals/mocha/index.d.ts" />
+/// <reference path="../../typings/globals/chai/index.d.ts" />
 
 import {expect} from 'chai';
 import {map_riders_to_drivers} from "../../models/match";
