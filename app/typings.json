@@ -2,5 +2,8 @@
   "dependencies": {
     "chai": "registry:npm/chai#3.5.0+20160415060238",
     "debug": "registry:npm/debug#2.0.0+20160511151334"
+  },
+  "globalDependencies": {
+    "node": "registry:dt/node#6.0.0+20160524002506"
   }
 }
