@@ -4,8 +4,10 @@
   "description": "ride sharing application",
   "main": "index.js",
   "scripts": {
-    "pretest": "tsc test/*Test.ts",
-    "test": "mocha"
+    "lint": "jshint ../**.js",
+    "build": "tsc && npm run lint",
+    "test": "mocha",
+    "pretest": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -28,13 +30,14 @@
     "forms": "^1.1.4",
     "googlemaps": "^1.4.0",
     "materialize-css": "^0.97.6",
-    "mocha": "^2.4.5",
+    "mocha": "^2.5.3",
     "mysql": "^2.10.2",
     "pug": "^2.0.0-alpha6",
     "typescript": "^1.8.10"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^2.4.5"
+    "chai": "latest",
+    "jshint": "latest",
+    "mocha": "latest"
   }
 }
