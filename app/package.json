@@ -5,8 +5,8 @@
   "main": "index.js",
   "outDir": "build",
   "scripts": {
-    "build": "tsc && npm run lint",
-    "test": "mocha",
+    "build": "tsc",
+    "test": "mocha ../dist/test/sql/*.js",
     "lint": "tslint **.ts",
     "clean": "rm -rf node_modules && npm install rm -rf typings && typings install",
     "pretest": "npm run build"
@@ -35,12 +35,10 @@
     "mocha": "^2.5.3",
     "mysql": "^2.10.2",
     "pug": "^2.0.0-alpha6",
-    "typescript": "^1.8.10",
-    "typescript-eslint-parser": "0.1.0-alpha-1"
+    "typescript": "^1.8.10"
   },
   "devDependencies": {
-    "chai": "latest",
-    "jshint": "latest",
-    "mocha": "latest"
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
   }
 }
