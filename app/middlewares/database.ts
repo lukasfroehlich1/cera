@@ -2,7 +2,7 @@
 let mysql = require("mysql");
 let GoogleMapsAPI = require("googlemaps");
 let async = require("async");
-let match = require("./match");
+let match = require("../models/match");
 
 export let con = mysql.createConnection({
     host: "playground.ro.lt",
@@ -25,9 +25,10 @@ export function start() {
     con.connect(function (err) {
         if (err) {
             console.log("Error connecting to Db");
-            return;
+            // TODO: peloperly handle errors
+            return err;
         }
-        console.log("Connection established");
+        // console.log("Connection established");
     });
 }
 
