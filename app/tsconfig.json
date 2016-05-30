@@ -6,8 +6,7 @@
         "noImplicitUseStrict": true,
         "outDir": "../dist",
         "sourceMap": true,
-        "sourceRoot": "app",
-        "moduleResolution": "classic"
+        "sourceRoot": "app"
     },
     "exclude": [
         "typings/index.d.ts",

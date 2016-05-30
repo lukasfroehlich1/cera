@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --module commonjs && npm run lint",
     "test": "mocha ../dist/test/*.js",
-    "lint": "tslint **.ts",
+    "lint": "tslint -c tslint.json **.ts",
     "clean": "rm -rf ../dist/node_modules && npm install && mv node_modules/ ../dist/ && rm -rf typings && typings install",
     "pretest": "npm run build"
   },
