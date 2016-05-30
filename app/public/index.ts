@@ -1,28 +1,30 @@
-var express = require('express');
-var app = express();
-var parser = require('body-parser');
-var api = require('./middlewares/connect');
-var async = require('async');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
+"use strict";
 
-app.set('view engine', 'pug');
-app.set('port', (process.env.PORT || 5000));
+let express = require("express");
+let app = express();
+let parser = require("body-parser");
+let api = require("./middlewares/connect");
+let async = require("async");
+let cookieParser = require("cookie-parser");
+let session = require("express-session");
 
-app.set('views', __dirname+'/public/views');
-app.use('/', express.static(__dirname + '/public'));
+app.set("view engine", "pug");
+app.set("port", (process.env.PORT || 5000));
+
+app.set("views", __dirname + "/public/views");
+app.use("/", express.static(__dirname + "/public"));
 app.use(parser.json());
 app.use(parser.urlencoded({
     extended: true
 }));
 app.use(cookieParser());
-app.use(session({secret: '1231923871sdflskjflsjflsdk'}));
+app.use(session({secret: "1231923871sdflskjflsjflsdk"}));
 
 api.start();
 
-app.get('/home', function (req, res) {
-    var driverRequests;
-    var riderRequests;
+app.get("/home", function (req, res) {
+    let driverRequests;
+    let riderRequests;
     async.waterfall([
         function getDriversRequests(requestDriversCallback) {
             api.getDriversByUserId(req.session.userId, requestDriversCallback);
@@ -40,29 +42,29 @@ app.get('/home', function (req, res) {
             riderRequests = requests;
             setRidersCallback(null, null);
         }, function loadPage( holder, loadCallback) {
-            res.render('index.pug', {pageContent: {userId: req.session.userId, drivers: driverRequests, riders: riderRequests}});
+            res.render("index.pug", {pageContent: {userId: req.session.userId, drivers: driverRequests, riders: riderRequests}});
         }], function (err) {
-            if ( err ) 
+            if ( err )
                 console.log(err);
         });
 });
 
-app.get('/', function(req, res) {
-    res.render('login.pug');
+app.get("/", function(req, res) {
+    res.render("login.pug");
 });
 
-app.post('/login', function(req, res) {
+app.post("/login", function(req, res) {
     async.waterfall([
         function getUserId(userIdCallback){
             api.getUserId(req.body.username, req.body.password, userIdCallback);
         },
         function checkUsers(row, checkCallback){
-            if(row.length != 1)
+            if (row.length !== 1)
                 checkCallback("User credentials match nothing");
             else {
                 req.session.userId = row[0].id;
                 console.log(row[0].id);
-                res.send(JSON.stringify({code: 1, url: '/home'}));
+                res.send(JSON.stringify({code: 1, url: "/home"}));
             }
         }
     ], function(error) {
@@ -73,14 +75,14 @@ app.post('/login', function(req, res) {
     });
 });
 
-app.post('/register', function(req, res) {
+app.post("/register", function(req, res) {
     async.waterfall([
         function getUser(getCallback) {
             api.getUser(req.body.username, getCallback);
         },
         function checkUser(userRows, checkCallback) {
             // only allow unique names
-            if ( userRows.length != 0 )
+            if ( userRows.length !== 0 )
                 checkCallback("username exists");
             else
                 checkCallback(null, null);
@@ -90,7 +92,7 @@ app.post('/register', function(req, res) {
         },
         function loadPage(user, loadCallback) {
             req.session.userId = user;
-            res.send(JSON.stringify({code: 1, url: '/home'}));
+            res.send(JSON.stringify({code: 1, url: "/home"}));
         }], function(err) {
             if (err) {
                 console.log(err);
@@ -101,19 +103,19 @@ app.post('/register', function(req, res) {
     );
 });
 
-app.get('/matches', function(req, res) {
-    res.render('matches.pug');
+app.get("/matches", function(req, res) {
+    res.render("matches.pug");
 });
 
-app.post('/riders', function(req, res) {
-    var packet = req.body;
+app.post("/riders", function(req, res) {
+    let packet = req.body;
     console.log(packet);
     async.waterfall([
         function addRider(riderCallback) {
             api.addRider(req.session.userId, packet.departure_date, packet.leave_earliest, packet.leave_latest, parseInt(packet.startId), packet.end_point, riderCallback);
         },
         function loadMatches(requestId, matchesCallback) {
-            //TODO
+            // TODO
             matchesCallback(null, null);
         },
         function loadPage(matches, loadCallback) {
@@ -127,19 +129,19 @@ app.post('/riders', function(req, res) {
     );
 });
 
-app.post('/drivers', function(req, res) {
-    var packet = req.body;
+app.post("/drivers", function(req, res) {
+    let packet = req.body;
     console.log(packet);
     async.waterfall([
         function addDriver(driverCallback) {
-            api.addDriver(req.session.userId, packet.departure_date, packet.leave_earliest, 
+            api.addDriver(req.session.userId, packet.departure_date, packet.leave_earliest,
                           packet.leave_latest, "", packet.end_point,
-                          parseInt(packet.startId), packet.threshold, 
+                          parseInt(packet.startId), packet.threshold,
                           packet.price_seat, packet.seats, driverCallback);
         },
         function loadMatches(tripId, matchesCallback) {
             matchesCallback(null, null);
-            //TODO
+            // TODO
         },
         function loadPage(matches, loadCallback) {
             res.writeHead(200, {"Content-Type": "application/json"});
@@ -152,10 +154,10 @@ app.post('/drivers', function(req, res) {
     );
 });
 
-//TODO end
+// TODO end
 
 
 
-app.listen(app.get('port'), function() {
-      console.log('Node app is running on port', app.get('port'));
+app.listen(app.get("port"), function() {
+      console.log("Node app is running on port", app.get("port"));
 });

@@ -3,12 +3,11 @@
   "version": "1.0.0",
   "description": "ride sharing application",
   "main": "index.js",
-  "outDir": "build",
   "scripts": {
-    "build": "tsc && npm run lint",
-    "test": "mocha",
-    "lint": "tslint **.ts",
-    "clean": "rm -rf node_modules && npm install rm -rf typings && typings install",
+    "build": "tsc --module commonjs && npm run lint",
+    "test": "mocha ../dist/test/*.js",
+    "lint": "tslint -c tslint.json **.ts",
+    "clean": "rm -rf ../dist/node_modules && npm install && mv node_modules/ ../dist/ && rm -rf typings && typings install",
     "pretest": "npm run build"
   },
   "repository": {
@@ -35,12 +34,6 @@
     "mocha": "^2.5.3",
     "mysql": "^2.10.2",
     "pug": "^2.0.0-alpha6",
-    "typescript": "^1.8.10",
-    "typescript-eslint-parser": "0.1.0-alpha-1"
-  },
-  "devDependencies": {
-    "chai": "latest",
-    "jshint": "latest",
-    "mocha": "latest"
+    "typescript": "^1.8.10"
   }
 }
