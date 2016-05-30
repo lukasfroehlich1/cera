@@ -83,7 +83,6 @@ function find_match(rider: Rider, driver: Driver,
     }
 
 
-    let i;
     async.map(rider.end_points, (x: Coordinate, callback) => { valid_trips(driver, rider, x, callback); },
               (err: any, res: Array<Match>) => {
 
@@ -92,9 +91,9 @@ function find_match(rider: Rider, driver: Driver,
 
         for (let i = 0; i < res.length; i++)
             if (res[i])
-                break;
+                find_match_callback(null, res[i]);
 
-        find_match_callback(null, res[i]);
+        find_match_callback(null, null);
     });
 };
 

@@ -16,7 +16,7 @@ describe("Matching", () => {
 
         it("should produce 1 result. simple case", (done) => {
             let rider1 = new Rider(1, 10, new Date("2011-12-01 00:00:00"), new Time(16, 34), new Time(19, 24), [sj], cp);
-            let driver1 = new Driver(1, 11, new Date("2011-12-01 00:00:00"), new Time(15, 0), new Time(17, 0), [], sf, cp, 13200, 1200, 20, 3);
+            let driver1 = new Driver(1, 11, new Date("2011-12-01 00:00:00"), new Time(15, 0), new Time(17, 0), [], sf, cp, 12420, 1600, 20, 3);
              map_riders_to_drivers([rider1], [driver1], (err: any, res: Array<Match>) => {
                  if (err) { done(err); }
                  expect(res).to.have.length(1);
