@@ -1,3 +1,5 @@
+"use strict";
+
 export class Coordinate {
     x: number;
     y: number;
@@ -8,7 +10,7 @@ export class Coordinate {
     }
 
     equals(other: Coordinate): boolean {
-        return other.x == this.x && other.y == this.y;
+        return other.x === this.x && other.y === this.y;
     }
 
     toString(): string {

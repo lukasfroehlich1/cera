@@ -1,11 +1,13 @@
 {
     "compilerOptions": {
         "target": "es6",
+        "module": "commonjs",
         "noImplicitReturns": true,
         "noImplicitUseStrict": true,
         "outDir": "../dist",
         "sourceMap": true,
-        "sourceRoot": "app"
+        "sourceRoot": "app",
+        "moduleResolution": "classic"
     },
     "exclude": [
         "typings/index.d.ts",

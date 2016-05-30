@@ -1,3 +1,5 @@
+"use strict";
+
 import {Rider, Driver, Coordinate, Match, Time} from "./class_defs";
 
 declare function require(name: string);

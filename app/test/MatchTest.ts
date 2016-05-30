@@ -1,10 +1,8 @@
 "use strict";
-/// <reference path="../../typings/globals/mocha/mocha.d.ts" />
-/// <reference path="../../typings/mocules/chai/index.d.ts" />
-//
+
 import {expect} from "chai";
-import {map_riders_to_drivers} from "../../models/match";
-import {Rider, Driver, Coordinate, Match, Time} from "../../models/class_defs";
+import {map_riders_to_drivers} from "../models/match";
+import {Rider, Driver, Coordinate, Match, Time} from "../models/class_defs";
 
 describe("Matching", () => {
 
@@ -119,4 +117,3 @@ describe("Matching", () => {
         });
     });
 });
-
