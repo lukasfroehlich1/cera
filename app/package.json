@@ -3,13 +3,12 @@
   "version": "1.0.0",
   "description": "ride sharing application",
   "main": "index.js",
-  "outDir": "build",
   "scripts": {
     "build": "tsc --module commonjs && npm run lint",
     "test": "mocha ../dist/test/*.js",
     "lint": "tslint **.ts",
-    "clean": "rm -rf node_modules && npm install rm -rf typings && typings install",
-    "pretest": "npm run build && cp -r node_modules ../dist"
+    "clean": "rm -rf ../dist/node_modules && npm install && mv node_modules/ ../dist/ && rm -rf typings && typings install",
+    "pretest": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -36,9 +35,5 @@
     "mysql": "^2.10.2",
     "pug": "^2.0.0-alpha6",
     "typescript": "^1.8.10"
-  },
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^2.5.3"
   }
 }

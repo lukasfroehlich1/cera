@@ -7,9 +7,9 @@ describe("SQL connection tests:", () => {
     before(() => {
         start();
     });
-    describe("create table", () => {
+    describe("create table", function() {
+        this.timeout(1000);
         it("should return one result", (done) => {
-
             con.query("create table test ( `id` int );", (err, result) => {
                 if (err) done(err);
 

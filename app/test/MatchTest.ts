@@ -13,7 +13,6 @@ describe("Matching", () => {
     let cp = new Coordinate(35.3050, -120.6625);
 
     describe("#validSingleMatch()", () => {
-
         it("should produce 1 result. simple case", (done) => {
             let rider1 = new Rider(1, 10, new Date("2011-12-01 00:00:00"), new Time(16, 34), new Time(19, 24), [sj], cp);
             let driver1 = new Driver(1, 11, new Date("2011-12-01 00:00:00"), new Time(15, 0), new Time(17, 0), [], sf, cp, 12420, 1600, 20, 3);
@@ -36,7 +35,6 @@ describe("Matching", () => {
     });
 
     describe("#timeChecks()", () => {
-
         it("should produce no results. times dont overlap. using minute form", (done) => {
             let rider1 = new Rider(1, 10, new Date("2011-12-01 00:00:00"), new Time(803), new Time(1320), [sj], cp);
             let driver1 = new Driver(1, 11, new Date("2011-12-01 00:00:00"), new Time(0), new Time(758), [], sf, cp, 13200, 1200, 20, 3);
