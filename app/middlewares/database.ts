@@ -1,34 +1,34 @@
-declare function require(name: string);
+"use strict";
+let mysql = require("mysql");
+let GoogleMapsAPI = require("googlemaps");
+let async = require("async");
+let match = require("../models/match");
 
-var mysql = require('mysql');
-var GoogleMapsAPI = require('googlemaps');
-var async = require('async');
-var match = require('./match');
-
-var con = mysql.createConnection({
-    host: "west-mysql-instance1.cxihylgafwaw.us-west-1.rds.amazonaws.com",
-    user: "root",
-    password: "sbhacksadmin",
-    database: "cera",
+export let con = mysql.createConnection({
+    host: "playground.ro.lt",
+    user: "cera",
+    password: "cera",
+    database: "testing",
     multipleStatements: true
 });
 
-var publicConfig = {
-  key: 'AIzaSyB_1bO9S2BzI5TmiQDIIVT1G-9uMbVWUd8',
+let publicConfig = {
+  key: "AIzaSyB_1bO9S2BzI5TmiQDIIVT1G-9uMbVWUd8",
   stagger_time:       1000, // for elevationPath
   encode_polylines:   false,
   secure:             true, // use https
 };
 
-var gmAPI = new GoogleMapsAPI(publicConfig);
+let gmAPI = new GoogleMapsAPI(publicConfig);
 
 export function start() {
     con.connect(function (err) {
         if (err) {
-            console.log('Error connecting to Db');
-            return;
+            console.log("Error connecting to Db");
+            // TODO: peloperly handle errors
+            return err;
         }
-        console.log('Connection established');
+        // console.log("Connection established");
     });
 }
 
@@ -46,8 +46,8 @@ export function end () {
 export function getAllUser () {
     con.query("SELECT * FROM `User`", function (err, rows) {
         if (err) throw err;
-        console.log('Users:\n');
-        console.log(rows); 
+        console.log("Users:\n");
+        console.log(rows);
         return rows;
     });
 }
@@ -57,7 +57,7 @@ export function getUserId (username, password, callback) {
         if ( err )
             callback(err);
         else {
-            console.log('User: \n');
+            console.log("User: \n");
             console.log(rows);
             callback(null, rows);
         }
@@ -70,7 +70,7 @@ export function getUser (username, callback) {
         if (err)
             callback(err);
         else {
-            console.log('User:\n');
+            console.log("User:\n");
             console.log(rows);
             callback(null, rows);
         }
@@ -78,15 +78,15 @@ export function getUser (username, callback) {
 }
 
 export function addUser (username, email, phone, password, callback) {
-    con.query("INSERT INTO `User` (username, email, phone, password) VALUES (?, ?, ?, ?)", [username, email, phone, password], 
+    con.query("INSERT INTO `User` (username, email, phone, password) VALUES (?, ?, ?, ?)", [username, email, phone, password],
     function (err, rows) {
         if (err) {
-            callback(err)
+            callback(err);
         }
         else {
-            console.log('Add user success');
+            console.log("Add user success");
             callback(err, rows.insertId);
-        }       
+        }
     });
 }
 
@@ -96,10 +96,10 @@ export function deleteUser (userId, callback) {
             callback(err);
         }
         else {
-            console.log('Delete user success');
+            console.log("Delete user success");
             update_matches();
             callback(null, null);
-        }    
+        }
     });
 }
 
@@ -110,7 +110,7 @@ export function updateUser (userId, username, email, phone, callback) {
             callback(err);
         }
         else {
-            console.log('Update user success');
+            console.log("Update user success");
             update_matches();
             callback(null, null);
         }
@@ -119,18 +119,16 @@ export function updateUser (userId, username, email, phone, callback) {
 
 // Calculate the trip time
 export function calculate_trip_time (startId, endPoint, callback) {
-    con.query("SELECT coordinate FROM `ValidStarts` WHERE id = ?", [startId], function(err, rows) { 
+    con.query("SELECT coordinate FROM `ValidStarts` WHERE id = ?", [startId], function(err, rows) {
         if ( err )
             throw err;
-        var startPoint = rows[0]["coordinate"];
+        let startPoint = rows[0]["coordinate"];
         gmAPI.directions({origin: startPoint, destination: endPoint}, function(err, results) {
                     if (err) {
-                        console.log('Error :( -> ' + err);
-                        console.log('most likely invalid location input');
+                        console.log("Error :( -> " + err);
+                        console.log("most likely invalid location input");
                     }else {
-                        //console.log(startPoint);
-                        //console.log(results);
-                        var new_trip_time = results.routes[0].legs.map(function (x) { 
+                        let new_trip_time = results.routes[0].legs.map(function (x) {
                             return x.duration.value;
                         }).reduce(function (a, b) { return a + b; }, 0);
                         callback(new_trip_time);
@@ -144,8 +142,8 @@ export function calculate_trip_time (startId, endPoint, callback) {
 export function getRider (callback) {
     con.query("SELECT * FROM `Rider`", function (err, rows) {
         if (err) callback(err);
-        console.log('Riders:\n');
-        console.log(rows); 
+        console.log("Riders:\n");
+        console.log(rows);
         callback(null, rows);
     });
 }
@@ -165,8 +163,8 @@ export function getRidersByUserId (userId, callback) {
 export function getAllRider (riderId, callback) {
     con.query("SELECT * FROM `Rider` WHERE id = ?", [riderId], function (err, rows) {
         if (err) callback(err);
-        console.log('Rider:\n');
-        console.log(rows); 
+        console.log("Rider:\n");
+        console.log(rows);
         callback(null, rows);
     });
 }
@@ -177,10 +175,10 @@ export function addRider (userId, leaveDate, leaveEarliest, leaveLatest, startId
         [userId, leaveDate, leaveEarliest, leaveLatest, startId, endPoints],
         function (err, rows) {
             if (err) {
-                callback(err)
+                callback(err);
             }
             else {
-                console.log('Add rider success ' + rows.insertId);
+                console.log("Add rider success " + rows.insertId);
                 update_matches();
                 callback(null, rows.insertId);
 
@@ -194,10 +192,10 @@ export function deleteRider (riderId, callback) {
             callback(err);
         }
         else {
-            console.log('Delete rider success');
+            console.log("Delete rider success");
             update_matches();
             callback(null, null);
-        } 
+        }
     });
 }
 
@@ -207,7 +205,7 @@ export function updateRider (riderId, leaveEarliest, leaveLatest, startId, endPo
             callback(err);
         }
         else {
-            console.log('Update rider success');
+            console.log("Update rider success");
             update_matches();
             callback(null, null);
         }
@@ -219,8 +217,8 @@ export function updateRider (riderId, leaveEarliest, leaveLatest, startId, endPo
 export function getAllDriver (callback) {
     con.query("SELECT * FROM `Driver`", function (err, rows) {
         if (err) callback(err);
-        console.log('Driver:\n');
-        console.log(rows); 
+        console.log("Driver:\n");
+        console.log(rows);
         callback(null, rows);
     });
 }
@@ -240,15 +238,15 @@ export function getDriversByUserId (userId, callback) {
 export function getDriver (driverId, callback) {
     con.query("SELECT * FROM `Driver` WHERE id = ?", [driverId], function (err, rows) {
         if (err) callback(err);
-        console.log('Driver:\n');
-        console.log(rows); 
+        console.log("Driver:\n");
+        console.log(rows);
         callback(null, rows);
     });
 }
 
 export function addDriver (userId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoint, startId, threshold, priceSeat, seat, callback) {
     calculate_trip_time(startId, endPoint, function(result){
-        var trip_time = result;
+        let trip_time = result;
         con.query("INSERT INTO `Driver` (userId, leave_date, leave_earliest, leave_latest, waypoints, end_point, startId, trip_time, threshold, price_seat, seats) VALUES (?, str_to_date(?, \"%e %M, %Y\"), ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [userId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoint, startId, trip_time, threshold, priceSeat, seat], function (err, rows) {
             if (err) {
@@ -256,13 +254,13 @@ export function addDriver (userId, leaveDate, leaveEarliest, leaveLatest, waypoi
             }
             else {
                 console.log(userId + " " + leaveEarliest);
-                console.log('Add driver success' + rows.insertId);
+                console.log("Add driver success" + rows.insertId);
                 update_matches();
                 callback(null, rows.insertId);
             }
         });
     });
-}  
+}
 
 export function deleteDriver (driverId, callback) {
     con.query("DELETE FROM `Driver` WHERE id = ?", [driverId], function (err, rows) {
@@ -270,21 +268,21 @@ export function deleteDriver (driverId, callback) {
             callback(err);
         }
         else {
-            console.log('Delete driver success');
+            console.log("Delete driver success");
             update_matches();
             callback(null, null);
-        } 
+        }
     });
 }
 
 export function updateDriver (driverId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat, callback) {
-    con.query("UPDATE `Driver` SET leave_date = str_to_date(?, \"%e %M, %Y\"), leave_earliest = ?, leave_latest = ?, waypoint = ?, end_points = ?, startId = ?, threshold = ?, price_seat = ?, seat = ? WHERE id = ?", 
+    con.query("UPDATE `Driver` SET leave_date = str_to_date(?, \"%e %M, %Y\"), leave_earliest = ?, leave_latest = ?, waypoint = ?, end_points = ?, startId = ?, threshold = ?, price_seat = ?, seat = ? WHERE id = ?",
             [leaveDate, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat, driverId], function (err, rows) {
         if (err) {
             callback(err);
         }
         else {
-            console.log('Update driver success');
+            console.log("Update driver success");
             callback(null, null);
             update_matches();
         }
@@ -292,7 +290,7 @@ export function updateDriver (driverId, leaveDate, leaveEarliest, leaveLatest, w
 }
 
 export function get_matches_rider (riderId, callback) {
-    con.query("SELECT * FROM `Match` WHERE id = ?", [riderId], function(err, rows) { 
+    con.query("SELECT * FROM `Match` WHERE id = ?", [riderId], function(err, rows) {
         console.log("Requesting matches for rider " + riderId);
         if ( err )
             callback(err);
@@ -302,7 +300,7 @@ export function get_matches_rider (riderId, callback) {
 }
 
 export function get_matches_driver (driverId, callback) {
-    con.query("SELECT * FROM `Match` WHERE driverId = ?", [driverId], function(err, rows) { 
+    con.query("SELECT * FROM `Match` WHERE driverId = ?", [driverId], function(err, rows) {
         console.log("Requesting matches for driver " + driverId);
         if ( err )
             callback(err);
@@ -315,16 +313,16 @@ export function update_matches () {
     con.query("SELECT Driver.id `id`, leave_date, leave_earliest, leave_latest, waypoints, end_point, coordinate start_point, trip_time, threshold from `Driver` join `ValidStarts` where startId = ValidStarts.id", [], function(err, drivers) {
         if (err) throw err;
         con.query("SELECT Rider.id `id`, leave_date, leave_earliest, leave_latest, coordinate start_point, end_points from `Rider` join `ValidStarts` where startId = ValidStarts.id", [], function(err, riders) {
-            if (err) 
+            if (err)
                 throw err;
             con.query("Truncate table `Match`", [], function(err, throwAway) {
-                if (err) 
+                if (err)
                     throw err;
                 match.map_riders_to_drivers(riders, drivers, function(results) {
-                    console.log('ay');              
+                    console.log("ay");
                     async.each(results, function(result, callback) {
-                        con.query("INSERT INTO `Match` values (?, ?, ?, ?)", 
-                            [result.rider_id, result.driver_id, result.rider_end_point, 
+                        con.query("INSERT INTO `Match` values (?, ?, ?, ?)",
+                            [result.rider_id, result.driver_id, result.rider_end_point,
                             result.new_trip_time], function(err, extra) {
 
                                 if (err) {
