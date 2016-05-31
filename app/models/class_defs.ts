@@ -37,7 +37,7 @@ export class Time {
             if (first > 1440 || first < 0) {
                 throw new Error("Invalid time input");
             }
-            this.hour = Math.floor(first/60);
+            this.hour = Math.floor(first / 60);
             this.minute = first % 60;
         }
     }
@@ -55,7 +55,7 @@ export class User {
     email: string;
     phone: string;
 
-    constuctor(id: number, username: string, password: string, 
+    constuctor(id: number, username: string, password: string,
                email: string, phone: string) {
 
         this.id = id;
@@ -82,15 +82,14 @@ export class Driver implements Traveler {
     waypoints: Array<Coordinate>;
     end_point: Coordinate;
     start_point: Coordinate;
-    trip_time: number;
     threshold: number;
     price_seat: number;
     seats: number;
 
-    constructor(id: number, user_id: number, leave_date: Date, 
-                leave_earliest: Time, leave_latest: Time, 
-                waypoints: Array<Coordinate>, end_point: Coordinate, 
-                start_point: Coordinate, trip_time: number, threshold: number, 
+    constructor(id: number, user_id: number, leave_date: Date,
+                leave_earliest: Time, leave_latest: Time,
+                waypoints: Array<Coordinate>, end_point: Coordinate,
+                start_point: Coordinate, threshold: number,
                 price_seat: number, seats: number) {
 
         this.id = id;
@@ -101,16 +100,15 @@ export class Driver implements Traveler {
         this.waypoints = waypoints;
         this.end_point = end_point;
         this.start_point = start_point;
-        this.trip_time = trip_time;
         this.threshold = threshold;
         this.price_seat = price_seat;
         this.seats = seats;
     }
 
     stringify_waypoints(): string {
-        var res = "";
+        let res = "";
 
-        for (var i in this.waypoints) {
+        for (let i in this.waypoints) {
             res += this.waypoints[i].toString() + "|";
         }
 
@@ -127,8 +125,8 @@ export class Rider implements Traveler {
     end_points: Array<Coordinate>;
     start_point: Coordinate;
 
-    constructor(id: number, user_id: number, leave_date: Date, 
-                leave_earliest: Time, leave_latest: Time, 
+    constructor(id: number, user_id: number, leave_date: Date,
+                leave_earliest: Time, leave_latest: Time,
                 end_points: Array<Coordinate>, start_point: Coordinate) {
 
         this.id = id;
@@ -146,15 +144,15 @@ export class Match {
     rider_id: number;
     driver_id: number;
     rider_end_point: Coordinate;
-    new_trip_time: number; 
-    leave_date: Date; 
-    leave_earliest: Time; 
-    leave_latest: Time; 
+    new_trip_time: number;
+    leave_date: Date;
+    leave_earliest: Time;
+    leave_latest: Time;
 
-    constructor(rider_id: number, driver_id: number, rider_end_point: Coordinate, 
-                new_trip_time: number, leave_date: Date, leave_earliest: Time, 
+    constructor(rider_id: number, driver_id: number, rider_end_point: Coordinate,
+                new_trip_time: number, leave_date: Date, leave_earliest: Time,
                 leave_latest: Time) {
-        
+
         this.rider_id = rider_id;
         this.driver_id = driver_id;
         this.rider_end_point = rider_end_point;
