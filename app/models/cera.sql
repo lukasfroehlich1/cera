@@ -39,7 +39,6 @@ create table Driver (
     `end_point` varchar(30),
     `startId` int not null,
     constraint FKDriver_startId foreign key (startId) references ValidStarts(id) on update cascade,
-    `trip_time` int not null, -- in seconds competed when new driver is added
     `threshold` int default 1200, -- in seconds
     `price_seat` int not null, 
     `seats` int not null
