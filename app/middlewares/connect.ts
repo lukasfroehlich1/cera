@@ -1,8 +1,9 @@
+declare function require(name: string);
+
 var mysql = require('mysql');
 var GoogleMapsAPI = require('googlemaps');
 var async = require('async');
 var match = require('./match');
-var connect = module.exports = {};
 
 var con = mysql.createConnection({
     host: "west-mysql-instance1.cxihylgafwaw.us-west-1.rds.amazonaws.com",
@@ -21,7 +22,7 @@ var publicConfig = {
 
 var gmAPI = new GoogleMapsAPI(publicConfig);
 
-connect.start = function () {
+export function start() {
     con.connect(function (err) {
         if (err) {
             console.log('Error connecting to Db');
@@ -31,7 +32,7 @@ connect.start = function () {
     });
 }
 
-connect.end = function () {
+export function end () {
     con.end(function(err) {
         // The connection is terminated gracefully
         // Ensures all previously enqueued queries are still
@@ -42,7 +43,7 @@ connect.end = function () {
 
 // User functions //
 // Gets all current users
-connect.getUser = function () {
+export function getAllUser () {
     con.query("SELECT * FROM `User`", function (err, rows) {
         if (err) throw err;
         console.log('Users:\n');
@@ -51,7 +52,7 @@ connect.getUser = function () {
     });
 }
 
-connect.getUserId = function(username, password, callback) {
+export function getUserId (username, password, callback) {
     con.query("SELECT id FROM `User` WHERE username = ? AND password = ?", [username, password], function(err, rows) {
         if ( err )
             callback(err);
@@ -64,7 +65,7 @@ connect.getUserId = function(username, password, callback) {
 }
 
 // Gets individual user based on id
-connect.getUser = function (username, callback) {
+export function getUser (username, callback) {
     con.query("SELECT * FROM `User` WHERE username = ?", [username], function (err, rows) {
         if (err)
             callback(err);
@@ -76,7 +77,7 @@ connect.getUser = function (username, callback) {
     });
 }
 
-connect.addUser = function (username, email, phone, password, callback) {
+export function addUser (username, email, phone, password, callback) {
     con.query("INSERT INTO `User` (username, email, phone, password) VALUES (?, ?, ?, ?)", [username, email, phone, password], 
     function (err, rows) {
         if (err) {
@@ -89,20 +90,20 @@ connect.addUser = function (username, email, phone, password, callback) {
     });
 }
 
-connect.deleteUser = function (userId, callback) {
+export function deleteUser (userId, callback) {
     con.query("DELETE FROM `User` WHERE id = ?", [userId],  function (err, rows) {
         if (err) {
             callback(err);
         }
         else {
             console.log('Delete user success');
-            connect.update_matches();
+            update_matches();
             callback(null, null);
         }    
     });
 }
 
-connect.updateUser = function (userId, username, email, phone, callback) {
+export function updateUser (userId, username, email, phone, callback) {
     con.query("UPDATE `User` SET username = ?, email = ?, phone = ? WHERE id = ?", [username, email, phone, userId],
     function (err, rows) {
         if (err) {
@@ -110,18 +111,18 @@ connect.updateUser = function (userId, username, email, phone, callback) {
         }
         else {
             console.log('Update user success');
-            connect.update_matches();
+            update_matches();
             callback(null, null);
         }
     });
 }
 
 // Calculate the trip time
-connect.calculate_trip_time = function (startId, endPoint, callback) {
+export function calculate_trip_time (startId, endPoint, callback) {
     con.query("SELECT coordinate FROM `ValidStarts` WHERE id = ?", [startId], function(err, rows) { 
         if ( err )
             throw err;
-        startPoint = rows[0]["coordinate"];
+        var startPoint = rows[0]["coordinate"];
         gmAPI.directions({origin: startPoint, destination: endPoint}, function(err, results) {
                     if (err) {
                         console.log('Error :( -> ' + err);
@@ -140,7 +141,7 @@ connect.calculate_trip_time = function (startId, endPoint, callback) {
 
 // Rider functions //
 // Gets all current riders
-connect.getRider = function (callback) {
+export function getRider (callback) {
     con.query("SELECT * FROM `Rider`", function (err, rows) {
         if (err) callback(err);
         console.log('Riders:\n');
@@ -149,7 +150,7 @@ connect.getRider = function (callback) {
     });
 }
 
-connect.getRidersByUserId = function (userId, callback) {
+export function getRidersByUserId (userId, callback) {
     con.query("SELECT * FROM `Rider` WHERE userId = ?", [userId], function (err, rows) {
         if ( err )
             callback(err);
@@ -161,7 +162,7 @@ connect.getRidersByUserId = function (userId, callback) {
 }
 
 // Gets rider given id
-connect.getRider = function (riderId, callback) {
+export function getAllRider (riderId, callback) {
     con.query("SELECT * FROM `Rider` WHERE id = ?", [riderId], function (err, rows) {
         if (err) callback(err);
         console.log('Rider:\n');
@@ -170,7 +171,7 @@ connect.getRider = function (riderId, callback) {
     });
 }
 
-connect.addRider = function (userId, leaveDate, leaveEarliest, leaveLatest, startId, endPoints, callback) {
+export function addRider (userId, leaveDate, leaveEarliest, leaveLatest, startId, endPoints, callback) {
     con.query(
         "INSERT INTO `Rider` (userId, leave_date, leave_earliest, leave_latest, startId, end_points) VALUES (?, ?, ?, ?, ?, ?)",
         [userId, leaveDate, leaveEarliest, leaveLatest, startId, endPoints],
@@ -180,34 +181,34 @@ connect.addRider = function (userId, leaveDate, leaveEarliest, leaveLatest, star
             }
             else {
                 console.log('Add rider success ' + rows.insertId);
-                connect.update_matches();
+                update_matches();
                 callback(null, rows.insertId);
 
             }
     });
 }
 
-connect.deleteRider = function (riderId, callback) {
+export function deleteRider (riderId, callback) {
     con.query("DELETE FROM `Rider` WHERE id = ?", [riderId], function (err, rows) {
         if (err) {
             callback(err);
         }
         else {
             console.log('Delete rider success');
-            connect.update_matches();
+            update_matches();
             callback(null, null);
         } 
     });
 }
 
-connect.updateRider = function (riderId, leaveEarliest, leaveLatest, startId, endPoints, callback) {
+export function updateRider (riderId, leaveEarliest, leaveLatest, startId, endPoints, callback) {
     con.query("UPDATE `Rider` SET leave_earliest = ?, leave_latest = ?, startId = ?, end_points = ?, phone = ? WHERE id = ?", [leaveEarliest, leaveLatest, startId, endPoints, riderId], function (err, rows) {
         if (err) {
             callback(err);
         }
         else {
             console.log('Update rider success');
-            connect.update_matches();
+            update_matches();
             callback(null, null);
         }
     });
@@ -215,7 +216,7 @@ connect.updateRider = function (riderId, leaveEarliest, leaveLatest, startId, en
 
 // Driver functions
 // Gets all current drivers
-connect.getDriver = function (callback) {
+export function getAllDriver (callback) {
     con.query("SELECT * FROM `Driver`", function (err, rows) {
         if (err) callback(err);
         console.log('Driver:\n');
@@ -224,7 +225,7 @@ connect.getDriver = function (callback) {
     });
 }
 
-connect.getDriversByUserId = function(userId, callback) {
+export function getDriversByUserId (userId, callback) {
     con.query("SELECT * FROM `Driver` WHERE userId = ?", [userId], function (err, rows) {
         if ( err )
             callback(err);
@@ -236,7 +237,7 @@ connect.getDriversByUserId = function(userId, callback) {
 }
 
 // Gets rider given id
-connect.getDriver = function (driverId, callback) {
+export function getDriver (driverId, callback) {
     con.query("SELECT * FROM `Driver` WHERE id = ?", [driverId], function (err, rows) {
         if (err) callback(err);
         console.log('Driver:\n');
@@ -245,8 +246,8 @@ connect.getDriver = function (driverId, callback) {
     });
 }
 
-connect.addDriver = function (userId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoint, startId, threshold, priceSeat, seat, callback) {
-    connect.calculate_trip_time(startId, endPoint, function(result){
+export function addDriver (userId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoint, startId, threshold, priceSeat, seat, callback) {
+    calculate_trip_time(startId, endPoint, function(result){
         var trip_time = result;
         con.query("INSERT INTO `Driver` (userId, leave_date, leave_earliest, leave_latest, waypoints, end_point, startId, trip_time, threshold, price_seat, seats) VALUES (?, str_to_date(?, \"%e %M, %Y\"), ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [userId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoint, startId, trip_time, threshold, priceSeat, seat], function (err, rows) {
@@ -256,27 +257,27 @@ connect.addDriver = function (userId, leaveDate, leaveEarliest, leaveLatest, way
             else {
                 console.log(userId + " " + leaveEarliest);
                 console.log('Add driver success' + rows.insertId);
-                connect.update_matches();
+                update_matches();
                 callback(null, rows.insertId);
             }
         });
     });
 }  
 
-connect.deleteDriver = function (driverId, callback) {
+export function deleteDriver (driverId, callback) {
     con.query("DELETE FROM `Driver` WHERE id = ?", [driverId], function (err, rows) {
         if (err) {
             callback(err);
         }
         else {
             console.log('Delete driver success');
-            connect.update_matches();
+            update_matches();
             callback(null, null);
         } 
     });
 }
 
-connect.updateDriver = function (driverId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat, callback) {
+export function updateDriver (driverId, leaveDate, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat, callback) {
     con.query("UPDATE `Driver` SET leave_date = str_to_date(?, \"%e %M, %Y\"), leave_earliest = ?, leave_latest = ?, waypoint = ?, end_points = ?, startId = ?, threshold = ?, price_seat = ?, seat = ? WHERE id = ?", 
             [leaveDate, leaveEarliest, leaveLatest, waypoints, endPoints, startId, threshold, priceSeat, seat, driverId], function (err, rows) {
         if (err) {
@@ -285,12 +286,12 @@ connect.updateDriver = function (driverId, leaveDate, leaveEarliest, leaveLatest
         else {
             console.log('Update driver success');
             callback(null, null);
-            connect.update_matches();
+            update_matches();
         }
     });
 }
 
-connect.get_matches_rider = function(riderId, callback) {
+export function get_matches_rider (riderId, callback) {
     con.query("SELECT * FROM `Match` WHERE id = ?", [riderId], function(err, rows) { 
         console.log("Requesting matches for rider " + riderId);
         if ( err )
@@ -300,7 +301,7 @@ connect.get_matches_rider = function(riderId, callback) {
     });
 }
 
-connect.get_matches_driver = function(driverId, callback) {
+export function get_matches_driver (driverId, callback) {
     con.query("SELECT * FROM `Match` WHERE driverId = ?", [driverId], function(err, rows) { 
         console.log("Requesting matches for driver " + driverId);
         if ( err )
@@ -310,7 +311,7 @@ connect.get_matches_driver = function(driverId, callback) {
     });
 }
 
-connect.update_matches = function() {
+export function update_matches () {
     con.query("SELECT Driver.id `id`, leave_date, leave_earliest, leave_latest, waypoints, end_point, coordinate start_point, trip_time, threshold from `Driver` join `ValidStarts` where startId = ValidStarts.id", [], function(err, drivers) {
         if (err) throw err;
         con.query("SELECT Rider.id `id`, leave_date, leave_earliest, leave_latest, coordinate start_point, end_points from `Rider` join `ValidStarts` where startId = ValidStarts.id", [], function(err, riders) {

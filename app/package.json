@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "ride sharing application",
   "main": "index.js",
+  "outDir": "build",
   "scripts": {
-    "pretest": "tsc test/*Test.ts",
-    "test": "mocha"
+    "build": "tsc && npm run lint",
+    "test": "mocha",
+    "lint": "tslint **.ts",
+    "clean": "rm -rf node_modules && npm install rm -rf typings && typings install",
+    "pretest": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -28,13 +32,15 @@
     "forms": "^1.1.4",
     "googlemaps": "^1.4.0",
     "materialize-css": "^0.97.6",
-    "mocha": "^2.4.5",
+    "mocha": "^2.5.3",
     "mysql": "^2.10.2",
     "pug": "^2.0.0-alpha6",
-    "typescript": "^1.8.10"
+    "typescript": "^1.8.10",
+    "typescript-eslint-parser": "0.1.0-alpha-1"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^2.4.5"
+    "chai": "latest",
+    "jshint": "latest",
+    "mocha": "latest"
   }
 }

@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "noImplicitReturns": true,
+        "noImplicitUseStrict": true,
+        "outDir": "../dist",
+        "sourceMap": true,
+        "sourceRoot": "app"
+    },
+    "exclude": [
+        "typings/index.d.ts",
+        "node_modules"
+    ]
+}
