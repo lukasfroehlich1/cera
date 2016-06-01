@@ -2,8 +2,6 @@
 
 import {Rider, Driver, Coordinate, Match, Time} from "./class_defs";
 
-declare function require(name: string);
-
 let GoogleMapsAPI = require("googlemaps");
 let async = require("async");
 
