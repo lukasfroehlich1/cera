@@ -5,7 +5,6 @@ import {map_riders_to_drivers} from "../app/models/match";
 import {Rider, Driver, Coordinate, Match, Time} from "../app/models/class_defs";
 
 describe("Matching", () => {
-
     let sf = new Coordinate(37.7749, -122.4194);
     let sj = new Coordinate(37.3382, -121.8863);
     let oaktown = new Coordinate(37.8044, -122.2711);
@@ -45,18 +44,16 @@ describe("Matching", () => {
              });
         });
 
-        // it("should produce 1 results. times overlap. using minute form", (done) => {
-        //     let rider1 = new Rider(1, 10, new Date("2011-12-01 00:00:00"), new Time(703), new Time(920), [sj], cp);
-        //     let driver1 = new Driver(1, 11, new Date("2011-12-01 00:00:00"), new Time(510), new Time(858), [], sf, cp, 1200, 20, 3);
+        it("should produce 1 results. times overlap. using minute form", (done) => {
+            let rider1 = new Rider(1, 10, new Date("2011-12-01 00:00:00"), new Time(703), new Time(920), [sj], cp);
+            let driver1 = new Driver(1, 11, new Date("2011-12-01 00:00:00"), new Time(510), new Time(858), [], sf, cp, 1600, 20, 3);
 
-        //     map_riders_to_drivers([rider1], [driver1], (err: any, res: Array<Match>) => {
-        //         if (err) { done(err); }
-        //         // expect(res).to.have.length(1);
-        //         // Something is weird here
-        //         // TODO look into this and its effects
-        //         done();
-        //     });
-        // });
+            map_riders_to_drivers([rider1], [driver1], (err: any, res: Array<Match>) => {
+                if (err) { done(err); }
+                expect(res).to.have.length(1);
+                done();
+            });
+        });
 
         it("should produce no results. times dont overlap", (done) => {
             let rider1 = new Rider(1,
