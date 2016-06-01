@@ -4,6 +4,7 @@
         "module": "commonjs",
         "noImplicitReturns": true,
         "noImplicitUseStrict": true,
+        "sourceMap": true,
         "outDir": "dist",
         "rootDir": "app"
     },
