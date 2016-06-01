@@ -4,9 +4,8 @@
         "module": "commonjs",
         "noImplicitReturns": true,
         "noImplicitUseStrict": true,
-        "outDir": "../dist",
-        "sourceMap": true,
-        "sourceRoot": "app"
+        "outDir": "dist",
+        "rootDir": "app"
     },
     "exclude": [
         "typings/index.d.ts",
