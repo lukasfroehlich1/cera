@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rm -rf dist && tsc --module commonjs && npm run lint",
-    "test": "mocha dist/test/*.js",
+    "test": "./node_modules/.bin/mocha dist/test/*.js",
     "lint": "tslint -c tslint.json app/**.ts",
     "clean": "rm -rf node_modules && npm install && rm -rf typings && typings install",
     "pretest": "npm run build"
