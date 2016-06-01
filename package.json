@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "rm -rf dist && tsc --module commonjs && npm run lint",
-    "test": "./node_modules/.bin/mocha dist/test/*.js",
+    "test": "./node_modules/.bin/mocha --require ts-node/register dist/test/*.js",
     "lint": "tslint -c tslint.json app/**.ts",
     "clean": "rm -rf node_modules && npm install && rm -rf typings && typings install",
-    "pretest": "npm run build"
+    "pretest": "typings install && npm run build",
+    "prepublish": "typings install && npm run build"
   },
   "repository": {
     "type": "git",
@@ -35,5 +36,9 @@
     "mysql": "^2.10.2",
     "pug": "^2.0.0-alpha6",
     "typescript": "^1.8.10"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3",
+    "ts-node": "^0.7.3"
   }
 }
