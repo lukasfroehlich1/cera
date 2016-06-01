@@ -9,7 +9,7 @@
     "lint": "tslint -c tslint.json app/**.ts",
     "clean": "rm -rf node_modules && npm install && rm -rf typings && typings install",
     "pretest": "typings install && npm run build",
-    "prepublish": "npm install typings --global && npm install -g tslint && typings install && npm run build"
+    "prepublish": "npm install && typings install && npm run build"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,8 @@
     "typescript": "^1.8.10"
   },
   "devDependencies": {
-    "ts-node": "^0.7.3"
+    "ts-node": "^0.7.3",
+    "tslint": "^3.10.2",
+    "typings": "^1.0.4"
   }
 }
