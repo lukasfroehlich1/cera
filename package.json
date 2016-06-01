@@ -37,6 +37,8 @@
     "typescript": "^1.8.10"
   },
   "devDependencies": {
-    "ts-node": "^0.7.3"
+    "ts-node": "^0.7.3",
+    "tslint": "^3.10.2",
+    "typings": "^1.0.4"
   }
 }
