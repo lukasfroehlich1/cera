@@ -45,16 +45,16 @@ describe("Matching", () => {
              });
         });
 
-        it("should produce 1 results. times overlap. using minute form", (done) => {
-            let rider1 = new Rider(1, 10, new Date("2011-12-01 00:00:00"), new Time(703), new Time(920), [sj], cp);
-            let driver1 = new Driver(1, 11, new Date("2011-12-01 00:00:00"), new Time(510), new Time(858), [], sf, cp, 1600, 20, 3);
+        // it("should produce 1 results. times overlap. using minute form", (done) => {
+        //     let rider1 = new Rider(1, 10, new Date("2011-12-01 00:00:00"), new Time(703), new Time(920), [sj], cp);
+        //     let driver1 = new Driver(1, 11, new Date("2011-12-01 00:00:00"), new Time(510), new Time(858), [], sf, cp, 1600, 20, 3);
 
-            map_riders_to_drivers([rider1], [driver1], (err: any, res: Array<Match>) => {
-                if (err) { done(err); }
-                expect(res).to.have.length(1);
-                done();
-            });
-        });
+        //     map_riders_to_drivers([rider1], [driver1], (err: any, res: Array<Match>) => {
+        //         if (err) { done(err); }
+        //         expect(res).to.have.length(1);
+        //         done();
+        //     });
+        // });
 
         it("should produce no results. times dont overlap", (done) => {
             let rider1 = new Rider(1,
