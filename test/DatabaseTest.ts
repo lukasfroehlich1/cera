@@ -1,7 +1,7 @@
 "use strict";
 
 import {expect} from "chai";
-import {con, start, end} from "../middlewares/database";
+import {con, start, end} from "../app/middlewares/database";
 
 describe("SQL connection tests:", () => {
     before(() => {

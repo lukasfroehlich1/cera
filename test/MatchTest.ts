@@ -1,8 +1,8 @@
 "use strict";
 
 import {expect} from "chai";
-import {map_riders_to_drivers} from "../models/match";
-import {Rider, Driver, Coordinate, Match, Time} from "../models/class_defs";
+import {map_riders_to_drivers} from "../app/models/match";
+import {Rider, Driver, Coordinate, Match, Time} from "../app/models/class_defs";
 
 describe("Matching", () => {
 
