@@ -4,7 +4,7 @@ let express = require("express");
 let app = express();
 let parser = require("body-parser");
 let api = require("./middlewares/connect");
-let async = require("async");
+import * as  async from "async";
 let cookieParser = require("cookie-parser");
 let session = require("express-session");
 
