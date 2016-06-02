@@ -9,7 +9,6 @@
         "rootDir": "app"
     },
     "exclude": [
-        "typings/index.d.ts",
         "node_modules"
     ]
 }
