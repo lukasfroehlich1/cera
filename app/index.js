@@ -2,7 +2,7 @@
 
 import express from 'express';
 import parser from 'body-parser';
-import api from './middlewares/connect';
+import api from './middlewares/database';
 import async from 'async';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
@@ -65,7 +65,8 @@ app.post('/login', (req, res) => {
       if (row.length !== 1) {
         checkCallback('User credentials match nothing');
       } else {
-        req.temp.session.userId = row[0].id;
+        req.temp.session.userId = row[0].id; // eslint-disable-line
+        // TODO can this be made better?
         console.log(row[0].id);
         res.send(JSON.stringify({code: 1, url: '/home'}));
       }
@@ -96,7 +97,8 @@ app.post('/register', (req, res) => {
                   req.body.password, userCallback);
     },
     function loadPage(user, loadCallback) {
-      req.session.userId = user;
+      req.session.userId = user; // eslint-disable-line 
+      // TODO can this be made better?
       res.send(JSON.stringify({code: 1, url: '/home'}));
     },
   ], (err) => {
