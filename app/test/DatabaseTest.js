@@ -1,5 +1,7 @@
 /* eslint-disable no-shadow, no-unused-vars */
-
+/*
+ * Data base is no longer setup
+ *
 import { expect } from 'chai';
 import { con, start, end } from '../middlewares/database';
 import async from 'async';
@@ -44,3 +46,4 @@ describe('SQL connection tests:', () => {
     });
   });
 });
+*/
