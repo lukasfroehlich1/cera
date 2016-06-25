@@ -8,7 +8,7 @@
     "test": "./node_modules/.bin/mocha dist/**/*.js",
     "lint": "eslint app",
     "clean": "rm -rf node_modules && npm install",
-    "pretest": "npm run build"
+    "pretest": "npm run lint && npm run build"
   },
   "repository": {
     "type": "git",
