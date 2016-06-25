@@ -1,12 +1,10 @@
-"use strict";
-
-let express = require("express");
+import * as express from "express";
 let app = express();
-let parser = require("body-parser");
-let api = require("./middlewares/connect");
-import * as  async from "async";
-let cookieParser = require("cookie-parser");
-let session = require("express-session");
+import * as parser from "body-parser";
+import * as api from "./middlewares/connect";
+import * as async from "async";
+import * as cookieParser from "cookie-parser";
+import * as session from "express-session";
 
 app.set("view engine", "pug");
 app.set("port", (process.env.PORT || 5000));
