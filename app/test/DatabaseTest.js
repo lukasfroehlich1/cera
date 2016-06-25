@@ -8,7 +8,7 @@ describe('SQL connection tests:', () => {
   before(() => {
     start();
   });
-  describe('create table', () => {
+  describe('create table', function () { // eslint-disable-line func-names
     this.timeout(10000);
     it('should return one result', (done) => {
       async.series([

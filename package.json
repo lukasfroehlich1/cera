@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "babel app -d dist",
-    "test": "./node_modules/.bin/mocha dist/test/*.js",
+    "test": "./node_modules/.bin/mocha dist/**/*.js",
     "lint": "eslint app",
     "clean": "rm -rf node_modules && npm install",
     "pretest": "npm run build"
