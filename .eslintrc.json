@@ -10,7 +10,8 @@
         "mocha": true
     },
     "rules": {
-        "object-curly-spacing": 0
+        "object-curly-spacing": 0,
+        "camelcase": 0
 
     },
     "globals": {

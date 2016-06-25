@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 
-import * as express from 'express';
-import * as parser from 'body-parser';
-import * as api from './middlewares/connect';
-import * as async from 'async';
-import * as cookieParser from 'cookie-parser';
-import * as session from 'express-session';
+import express from 'express';
+import parser from 'body-parser';
+import api from './middlewares/connect';
+import async from 'async';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
 
 const app = express();
 
