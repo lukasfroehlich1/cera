@@ -1,15 +1,22 @@
 /* eslint-disable */
-// This file  needs to be reworked so not going to both doing style
 import mysql from 'mysql';
 import GoogleMapsAPI from 'googlemaps';
 import async from 'async';
 import match from '../models/match';
 
+// export let con = mysql.createConnection({
+//     host: 'playground.ro.lt',
+//     user: 'cera',
+//     password: 'cera',
+//     database: 'testing',
+//     multipleStatements: true
+// });
+
 export let con = mysql.createConnection({
-    host: 'playground.ro.lt',
-    user: 'cera',
-    password: 'cera',
-    database: 'testing',
+    host: 'sql3.freemysqlhosting.net',
+    user: 'sql3125388',
+    password: 'yem5ettyJ9',
+    database: 'sql3125388',
     multipleStatements: true
 });
 
