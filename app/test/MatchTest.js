@@ -9,8 +9,8 @@ describe('Matching', () => {
   // const san_mateo = new Coordinate(37.5630, -122.3255);
   const cp = new Coordinate(35.3050, -120.6625);
 
-  describe('#validSingleMatch()', () => {
-    it('should produce 1 result. simple case', (done) => {
+  describe('testing basic functionality', () => {
+    it('should match when given two overlapping riders and drivers', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
                                new Time(16, 34), new Time(19, 24), [sj], cp);
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'), new Time(15, 0),
@@ -22,7 +22,8 @@ describe('Matching', () => {
       });
     });
 
-    it('should produce 1 result. Date has leftover time', (done) => {
+    it('should match when given two overlapping users even with the Date' +
+       'having leftover time', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 20:00:00'), new Time(14, 34),
                                new Time(15, 21), [sj], cp);
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:23:00'), new Time(13, 21),
@@ -35,8 +36,8 @@ describe('Matching', () => {
     });
   });
 
-  describe('#timeChecks()', () => {
-    it('should produce no results. times dont overlap. using minute form', (done) => {
+  describe('testing various timings', () => {
+    it('should produce no results with times that dont overlap using minute form', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'), new Time(803),
                                new Time(1320), [sj], cp);
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'), new Time(0),
@@ -44,12 +45,11 @@ describe('Matching', () => {
       map_riders_to_drivers([rider1], [driver1], (err, res) => {
         if (err) throw err;
         expect(res).to.have.length(0);
-
         done();
       });
     });
 
-    it('should produce 1 results. times overlap. using minute form', (done) => {
+    it('should produce one result with overlapping times and using minute form', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
                                new Time(703), new Time(920), [sj], cp);
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'), new Time(510),
@@ -57,14 +57,12 @@ describe('Matching', () => {
 
       map_riders_to_drivers([rider1], [driver1], (err, res) => {
         if (err) throw err;
-
         expect(res).to.have.length(1);
-
         done();
       });
     });
 
-    it('should produce no results. times dont overlap', (done) => {
+    it('should produce no results since times dont overlap', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'), new Time(14, 34),
                                new Time(15, 21), [sj], cp);
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'), new Time(15, 21),
@@ -76,7 +74,7 @@ describe('Matching', () => {
       });
     });
 
-    it('should produce no results. months dont overlap', (done) => {
+    it('should produce no results since months dont overlap', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-11-01 00:00:00'), new Time(14, 34),
                                new Time(15, 21), [sj], cp);
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'), new Time(13, 21),
@@ -88,7 +86,7 @@ describe('Matching', () => {
       });
     });
 
-    it('should produce no results. dates dont overlap', (done) => {
+    it('should produce no results since dates dont overlap', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-02 00:00:00'), new Time(14, 34),
                                new Time(15, 21), [sj], cp);
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'), new Time(13, 21),
@@ -100,10 +98,10 @@ describe('Matching', () => {
       });
     });
 
-    it('should produce no results. dates dont overlap extra time', (done) => {
+    it('should produce no results since dates dont overlap and extra time on dates', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-02 00:00:00'), new Time(14, 34),
                                new Time(15, 21), [sj], cp);
-      const driver1 = new Driver(1, 11, new Date('2011-12-01 20:00:00'), new Time(13, 21),
+      const driver1 = new Driver(1, 11, new Date('2011-12-01 20:20:00'), new Time(13, 21),
                                  new Time(17, 0), [], sf, cp, 1200, 20, 3);
       map_riders_to_drivers([rider1], [driver1], (err, res) => {
         if (err) throw err;
@@ -112,7 +110,7 @@ describe('Matching', () => {
       });
     });
 
-    it('should produce no results. years differ', (done) => {
+    it('should produce no results since years differ', (done) => {
       const rider1 = new Rider(1, 10, new Date('2012-12-01 00:00:00'), new Time(14, 34),
                                new Time(15, 21), [sj], cp);
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'), new Time(13, 21),
@@ -125,8 +123,8 @@ describe('Matching', () => {
     });
   });
 
-  describe('#multipleMatchTests()', () => {
-    it('should return two results. multi rider', (done) => {
+  describe('matching multiple riders and drivers', () => {
+    it('should return two results with two riders + one driver and all times overlap', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
                                new Time(800), new Time(1300), [sj], cp);
       const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
@@ -141,7 +139,7 @@ describe('Matching', () => {
         done();
       });
     });
-    it('should return two results. multi driver', (done) => {
+    it('should return two results with one rider + two drivers and all times overlap', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
                                new Time(800), new Time(1300), [sj], cp);
 
@@ -156,7 +154,8 @@ describe('Matching', () => {
         done();
       });
     });
-    it('should return four results. multi rider/driver', (done) => {
+    it('should return four results with two riders + two drivers and all' +
+       'overlapping times', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
                                new Time(800), new Time(1300), [sj], cp);
       const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
@@ -173,7 +172,8 @@ describe('Matching', () => {
         done();
       });
     });
-    it('should return four results. multi rider/driver', (done) => {
+    it('should return four results with two riders + two drivers where riders' +
+       'dont overlap', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
                                new Time(800), new Time(1200), [sj], cp);
       const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
@@ -190,7 +190,7 @@ describe('Matching', () => {
         done();
       });
     });
-    it('should return three results. multi rider/driver', (done) => {
+    it('should return three results with two of each and only three overlaps exist', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
                                new Time(400), new Time(600), [sj], cp);
       const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
@@ -207,7 +207,8 @@ describe('Matching', () => {
         done();
       });
     });
-    it('should return four results. multi rider/driver', (done) => {
+    it('should return four results with three rider and two driver with only' +
+       'four overlaps', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
                                new Time(400), new Time(600), [sj], cp);
       const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
@@ -226,7 +227,7 @@ describe('Matching', () => {
         done();
       });
     });
-    it('should return no results. multi rider/driver', (done) => {
+    it('should return no results with two of each and no overlaps', (done) => {
       const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
                                new Time(500), new Time(800), [sj], cp);
       const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
@@ -238,6 +239,35 @@ describe('Matching', () => {
                                  new Time(1150), new Time(1250), [], sf, cp, 1600, 20, 3);
 
       map_riders_to_drivers([rider1, rider2], [driver1, driver2], (err, res) => {
+        if (err) throw err;
+        expect(res).to.have.length(0);
+        done();
+      });
+    });
+  });
+
+  describe('threshold', () => {
+    it('should return one result with an approriate threshold', (done) => {
+      const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(500), new Time(800), [sj], cp);
+
+      const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(700), new Time(1100), [], sf, cp, 1000, 20, 3);
+
+      map_riders_to_drivers([rider1], [driver1], (err, res) => {
+        if (err) throw err;
+        expect(res).to.have.length(1);
+        done();
+      });
+    });
+    it('should return no results with a small threshold', (done) => {
+      const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(500), new Time(800), [sj], cp);
+
+      const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(400), new Time(1100), [], sf, cp, 400, 20, 3);
+
+      map_riders_to_drivers([rider1], [driver1], (err, res) => {
         if (err) throw err;
         expect(res).to.have.length(0);
         done();
