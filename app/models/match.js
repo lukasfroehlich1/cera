@@ -1,5 +1,4 @@
 import { Match, Time } from './class_defs';
-
 import GoogleMapsAPI from 'googlemaps';
 import async from 'async';
 
@@ -25,7 +24,21 @@ function trip_time(trip) {
   return trip.routes[0].legs.map(x => x.duration.value).reduce((a, b) => a + b, 0);
 }
 
-function valid_trips(driver, rider, this_endpoint, callback) {
+function lookup_trip(conf, callback) {
+  gmAPI.directions(conf, (err, results) => {
+    if (err) {
+      callback(null, null);   // treating errors as no results
+      return;
+    }
+
+    callback(null, results);
+  });
+}
+
+
+// valid_trip consumes a driver, rider, current_endpoint and determines if the current trip is valid
+// returns match if valid and null if not
+function valid_trip(rider, driver, current_endpoint, valid_trip_callback) {
   const rider_leave_earliest = rider.leave_earliest.getMinutes();
   const rider_leave_latest = rider.leave_latest.getMinutes();
 
@@ -35,36 +48,49 @@ function valid_trips(driver, rider, this_endpoint, callback) {
   const leave_earliest = Math.max(rider_leave_earliest, driver_leave_earliest);
   const leave_latest = Math.min(rider_leave_latest, driver_leave_latest);
 
+
   // departure_time: (leave_earliest + leave_latest) / 2
   // TODO could use leave date to calcuate time in the future. incorporate into both calls
-  gmAPI.directions({
+
+  const new_trip_conf = {
     origin: driver.start_point.toString(), destination: driver.end_point.toString(),
-    waypoints: `optimize:true|${driver.stringify_waypoints()}|${this_endpoint.toString()}`,
-  }, (err_new_time, results_new_time) => {
-    if (err_new_time) callback(null, null);   // treating errors as failed matches
+    waypoints: `optimize:true|${driver.stringify_waypoints()}|${current_endpoint.toString()}`,
+  };
 
-    gmAPI.directions({
-      origin: driver.start_point.toString(), destination: driver.end_point.toString(),
-    }, (err_old_time, results_old_time) => {
-      if (err_old_time) callback(null, null);   // treating errors as failed matches
+  // TODO does not consider the drivers current waypoints
+  const old_trip_conf = {
+    origin: driver.start_point.toString(), destination: driver.end_point.toString(),
+  };
 
-      const old_trip_time = trip_time(results_old_time);
-      const new_trip_time = trip_time(results_new_time);
+  async.map([new_trip_conf, old_trip_conf], lookup_trip, (err, results) => {
+    if (err) {
+      valid_trip_callback(err);
+      return;
+    }
 
-      if (driver.threshold >= new_trip_time - old_trip_time) {
-        callback(null, new Match(rider.id, driver.id,
-                                 this_endpoint,
-                                 new_trip_time, rider.leave_date,
-                                 new Time(leave_earliest),
-                                 new Time(leave_latest)));
-      } else {
-        callback(null, null);
-      }
-    });
+    const new_trip_time = trip_time(results[0]);
+    const old_trip_time = trip_time(results[1]);
+
+    if (driver.threshold >= new_trip_time - old_trip_time) {
+      const new_match = new Match(rider.id,
+                                  driver.id,
+                                  current_endpoint,
+                                  new_trip_time,
+                                  rider.leave_date,
+                                  new Time(leave_earliest),
+                                  new Time(leave_latest));
+
+      valid_trip_callback(null, new_match);
+    } else {
+      valid_trip_callback(null, null);
+    }
   });
 }
 
-function find_match(rider, driver, find_match_callback) {
+
+// valid_trip consumes a single rider, driver and returns a match if one was found or null if none.
+// will consider the riders endpoint preference.
+function find_match(rider, driver, match_callback) {
   const rider_leave_earliest = rider.leave_earliest.getMinutes();
   const rider_leave_latest = rider.leave_latest.getMinutes();
 
@@ -75,38 +101,45 @@ function find_match(rider, driver, find_match_callback) {
       !same_date(rider, driver) ||
       driver_leave_earliest >= rider_leave_latest ||
       driver_leave_latest <= rider_leave_earliest) {
-    find_match_callback(null, null);
+    match_callback(null, null);
+    return;
   }
 
+  const connector = (item, callback) => valid_trip(rider, driver, item, callback);
 
-  async.map(rider.end_points,
-            (end_point, callback) => valid_trips(driver, rider, end_point, callback),
-            (err, res) => {
-              if (err) {
-                find_match_callback(err, null);
-              }
+  async.map(rider.end_points, connector, (err, res) => {
+    if (err) {
+      match_callback(err);
+      return;
+    }
 
-              for (let i = 0; i < res.length; i++) {
-                if (res[i]) {
-                  find_match_callback(null, res[i]);
-                }
-              }
+    for (let i = 0; i < res.length; i++) {
+      if (res[i]) {
+        match_callback(null, res[i]);
+        return;
+      }
+    }
 
-              find_match_callback(null, null);
-            });
+    match_callback(null, null);
+  });
 }
-
 
 export function map_riders_to_drivers(riders, drivers, map_callback) {
   async.map(riders, (rider, callback1) => {
     async.map(drivers, (driver, callback2) => {
       find_match(rider, driver, (err, results) => {
-        if (err) callback2(err, null);
+        if (err) {
+          callback2(err, null);
+          return;
+        }
 
         callback2(null, results);
       });
     }, (err, results) => {
-      if (err) callback1(err, null);
+      if (err) {
+        callback1(err, null);
+        return;
+      }
 
       callback1(null, results.filter((x) => x != null));
     });
