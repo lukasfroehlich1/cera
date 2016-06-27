@@ -16,7 +16,7 @@ describe('Matching', () => {
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'), new Time(15, 0),
                                  new Time(17, 0), [], sf, cp, 1600, 20, 3);
       map_riders_to_drivers([rider1], [driver1], (err, res) => {
-        if (err) { done(err); }
+        if (err) throw err;
         expect(res).to.have.length(1);
         done();
       });
@@ -28,7 +28,7 @@ describe('Matching', () => {
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:23:00'), new Time(13, 21),
                                  new Time(17, 0), [], sf, cp, 1200, 20, 3);
       map_riders_to_drivers([rider1], [driver1], (err, res) => {
-        if (err) { done(err); }
+        if (err) throw err;
         expect(res).to.have.length(1);
         done();
       });
@@ -82,7 +82,7 @@ describe('Matching', () => {
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'), new Time(13, 21),
                                  new Time(17, 0), [], sf, cp, 1200, 20, 3);
       map_riders_to_drivers([rider1], [driver1], (err, res) => {
-        if (err) { done(err); }
+        if (err) throw err;
         expect(res).to.have.length(0);
         done();
       });
@@ -94,7 +94,7 @@ describe('Matching', () => {
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'), new Time(13, 21),
                                  new Time(17, 0), [], sf, cp, 1200, 20, 3);
       map_riders_to_drivers([rider1], [driver1], (err, res) => {
-        if (err) { done(err); }
+        if (err) throw err;
         expect(res).to.have.length(0);
         done();
       });
@@ -106,7 +106,7 @@ describe('Matching', () => {
       const driver1 = new Driver(1, 11, new Date('2011-12-01 20:00:00'), new Time(13, 21),
                                  new Time(17, 0), [], sf, cp, 1200, 20, 3);
       map_riders_to_drivers([rider1], [driver1], (err, res) => {
-        if (err) { done(err); }
+        if (err) throw err;
         expect(res).to.have.length(0);
         done();
       });
@@ -118,7 +118,127 @@ describe('Matching', () => {
       const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'), new Time(13, 21),
                                  new Time(17, 0), [], sf, cp, 1200, 20, 3);
       map_riders_to_drivers([rider1], [driver1], (err, res) => {
-        if (err) { done(err); }
+        if (err) throw err;
+        expect(res).to.have.length(0);
+        done();
+      });
+    });
+  });
+
+  describe('#multipleMatchTests()', () => {
+    it('should return two results. multi rider', (done) => {
+      const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(800), new Time(1300), [sj], cp);
+      const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(703), new Time(920), [sj], cp);
+
+      const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(510), new Time(858), [], sf, cp, 1600, 20, 3);
+
+      map_riders_to_drivers([rider1, rider2], [driver1], (err, res) => {
+        if (err) throw err;
+        expect(res).to.have.length(2);
+        done();
+      });
+    });
+    it('should return two results. multi driver', (done) => {
+      const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(800), new Time(1300), [sj], cp);
+
+      const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(400), new Time(810), [], sf, cp, 1600, 20, 3);
+      const driver2 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(1200), new Time(1400), [], sf, cp, 1600, 20, 3);
+
+      map_riders_to_drivers([rider1], [driver1, driver2], (err, res) => {
+        if (err) throw err;
+        expect(res).to.have.length(2);
+        done();
+      });
+    });
+    it('should return four results. multi rider/driver', (done) => {
+      const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(800), new Time(1300), [sj], cp);
+      const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(800), new Time(1300), [sj], cp);
+
+      const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(400), new Time(810), [], sf, cp, 1600, 20, 3);
+      const driver2 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(1200), new Time(1400), [], sf, cp, 1600, 20, 3);
+
+      map_riders_to_drivers([rider1, rider2], [driver1, driver2], (err, res) => {
+        if (err) throw err;
+        expect(res).to.have.length(4);
+        done();
+      });
+    });
+    it('should return four results. multi rider/driver', (done) => {
+      const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(800), new Time(1200), [sj], cp);
+      const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(1300), new Time(1400), [sj], cp);
+
+      const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(1100), new Time(1400), [], sf, cp, 1600, 20, 3);
+      const driver2 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(1150), new Time(1350), [], sf, cp, 1600, 20, 3);
+
+      map_riders_to_drivers([rider1, rider2], [driver1, driver2], (err, res) => {
+        if (err) throw err;
+        expect(res).to.have.length(4);
+        done();
+      });
+    });
+    it('should return three results. multi rider/driver', (done) => {
+      const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(400), new Time(600), [sj], cp);
+      const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(800), new Time(900), [sj], cp);
+
+      const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(500), new Time(850), [], sf, cp, 1600, 20, 3);
+      const driver2 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(860), new Time(1050), [], sf, cp, 1600, 20, 3);
+
+      map_riders_to_drivers([rider1, rider2], [driver1, driver2], (err, res) => {
+        if (err) throw err;
+        expect(res).to.have.length(3);
+        done();
+      });
+    });
+    it('should return four results. multi rider/driver', (done) => {
+      const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(400), new Time(600), [sj], cp);
+      const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(400), new Time(600), [sj], cp);
+      const rider3 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(1000), new Time(1100), [sj], cp);
+
+      const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(500), new Time(1050), [], sf, cp, 1600, 20, 3);
+      const driver2 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(1050), new Time(1250), [], sf, cp, 1600, 20, 3);
+
+      map_riders_to_drivers([rider1, rider2, rider3], [driver1, driver2], (err, res) => {
+        if (err) throw err;
+        expect(res).to.have.length(4);
+        done();
+      });
+    });
+    it('should return no results. multi rider/driver', (done) => {
+      const rider1 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(500), new Time(800), [sj], cp);
+      const rider2 = new Rider(1, 10, new Date('2011-12-01 00:00:00'),
+                               new Time(600), new Time(700), [sj], cp);
+
+      const driver1 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(1000), new Time(1100), [], sf, cp, 1600, 20, 3);
+      const driver2 = new Driver(1, 11, new Date('2011-12-01 00:00:00'),
+                                 new Time(1150), new Time(1250), [], sf, cp, 1600, 20, 3);
+
+      map_riders_to_drivers([rider1, rider2], [driver1, driver2], (err, res) => {
+        if (err) throw err;
         expect(res).to.have.length(0);
         done();
       });
