@@ -40,17 +40,13 @@ function valid_trips(driver, rider, this_endpoint, callback) {
   gmAPI.directions({
     origin: driver.start_point.toString(), destination: driver.end_point.toString(),
     waypoints: `optimize:true|${driver.stringify_waypoints()}|${this_endpoint.toString()}`,
-  }, (err_new, results_new_time) => {
-    if (err_new) {
-      callback(null, null);   // treating errors as failed matches
-    }
+  }, (err_new_time, results_new_time) => {
+    if (err_new_time) callback(null, null);   // treating errors as failed matches
 
     gmAPI.directions({
       origin: driver.start_point.toString(), destination: driver.end_point.toString(),
-    }, (err_old, results_old_time) => {
-      if (err_old) {
-        callback(null, null);   // treating errors as failed matches
-      }
+    }, (err_old_time, results_old_time) => {
+      if (err_old_time) callback(null, null);   // treating errors as failed matches
 
       const old_trip_time = trip_time(results_old_time);
       const new_trip_time = trip_time(results_new_time);
@@ -83,7 +79,8 @@ function find_match(rider, driver, find_match_callback) {
   }
 
 
-  async.map(rider.end_points, (x, callback) => valid_trips(driver, rider, x, callback),
+  async.map(rider.end_points,
+            (end_point, callback) => valid_trips(driver, rider, end_point, callback),
             (err, res) => {
               if (err) {
                 find_match_callback(err, null);
@@ -104,15 +101,13 @@ export function map_riders_to_drivers(riders, drivers, map_callback) {
   async.map(riders, (rider, callback1) => {
     async.map(drivers, (driver, callback2) => {
       find_match(rider, driver, (err, results) => {
-        if (err) {
-          callback2(err, null);
-        }
+        if (err) callback2(err, null);
+
         callback2(null, results);
       });
     }, (err, results) => {
-      if (err) {
-        callback1(err, null);
-      }
+      if (err) callback1(err, null);
+
       callback1(null, results.filter((x) => x != null));
     });
   }, (err, results) => {
