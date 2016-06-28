@@ -48,6 +48,7 @@ app.get('/home', (req, res) => {
     }], (err) => {
     if (err) {
       console.log(err);
+      return;
     }
   });
 });
@@ -75,6 +76,7 @@ app.post('/login', (req, res) => {
     if (error) {
       console.log(error);
       res.send(JSON.stringify({code: 2}));
+      return;
     }
   });
 });
@@ -106,6 +108,7 @@ app.post('/register', (req, res) => {
       console.log(err);
       console.log('Error in adding new user');
       res.send(JSON.stringify({code: 2}));
+      return;
     }
   });
 });
@@ -134,6 +137,7 @@ app.post('/riders', (req, res) => {
     if (err) {
       console.log(err);
       console.log('Error with adding trip');
+      return;
     }
   });
 });
@@ -159,6 +163,7 @@ app.post('/drivers', (req, res) => {
     if (err) {
       console.log(err);
       console.log('Error with adding trip');
+      return;
     }
   });
 });
