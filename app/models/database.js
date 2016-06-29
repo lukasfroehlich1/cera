@@ -1,4 +1,5 @@
 /* eslint-disable */
+// TODO: Remove disable
 import mysql from 'mysql';
 import GoogleMapsAPI from 'googlemaps';
 import async from 'async';
