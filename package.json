@@ -4,11 +4,11 @@
   "description": "ride sharing application",
   "main": "index.js",
   "scripts": {
-    "build": "tsc --module commonjs && npm run lint",
-    "test": "mocha ../dist/test/*.js",
-    "lint": "tslint -c tslint.json **.ts",
-    "clean": "rm -rf ../dist/node_modules && npm install && mv node_modules/ ../dist/ && rm -rf typings && typings install",
-    "pretest": "npm run build"
+    "build": "babel --ignore public app -d dist",
+    "test": "./node_modules/.bin/mocha dist/**/*.js",
+    "lint": "eslint app",
+    "clean": "rm -rf node_modules && npm install",
+    "pretest": "npm run lint && npm run build"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,13 @@
     "materialize-css": "^0.97.6",
     "mocha": "^2.5.3",
     "mysql": "^2.10.2",
-    "pug": "^2.0.0-alpha6",
-    "typescript": "^1.8.10"
+    "pug": "^2.0.0-alpha6"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-preset-es2015": "^6.9.0",
+    "eslint": "^2.13.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.9.2"
   }
 }
