@@ -1,0 +1,22 @@
+{
+  "extends": ["eslint-config-airbnb"],
+  "env": {
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "ecmaFeatures": {
+    "jsx": true
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "one-var": 0,
+    "eol-last": 0,
+    "object-curly-spacing": 0,
+    "camelcase": 0
+  },
+  "globals": {
+  }
+}
