@@ -4,8 +4,8 @@
   "description": "ride sharing application",
   "main": "",
   "scripts": {
-    "build": "babel app --out-dir dist && babel src --out-dir lib && webpack ./lib/entry.js ./public/scripts/index.js",
-    "test": "npm run build && npm run lint && ./node_modules/.bin/mocha app/test/**/*.js lib/test/**/*.js",
+    "build": "babel app --out-dir dist --copy-files && babel src --out-dir lib --copy-files && webpack ./lib/entry.js ./public/scripts/index.js",
+    "test": "npm run build && npm run lint && ./node_modules/.bin/mocha dist/test/**/*.js lib/test/**/*.js",
     "lint": "eslint app/** src/**",
     "clean": "rm -rf node_modules && npm install",
     "start": "npm run build && node ./dist/index.js"

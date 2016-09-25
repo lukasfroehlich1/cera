@@ -46,8 +46,8 @@
 
 	'use strict';
 
-	var React = __webpack_require__(1),
-	    reactDom = __webpack_require__(34);
+	var React = __webpack_require__(1);
+	var reactDom = __webpack_require__(34);
 
 	var App = __webpack_require__(172);
 
@@ -21428,15 +21428,15 @@
 	var React = __webpack_require__(1);
 
 	function App() {
-	      return React.createElement(
-	            "div",
-	            { id: "app" },
-	            React.createElement(
-	                  "h1",
-	                  null,
-	                  "Hello"
-	            )
-	      );
+	  return React.createElement(
+	    "div",
+	    { id: "app" },
+	    React.createElement(
+	      "h1",
+	      null,
+	      "Hello"
+	    )
+	  );
 	}
 
 	module.exports = App;
