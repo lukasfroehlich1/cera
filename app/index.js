@@ -6,14 +6,15 @@ import api from './middlewares/database';
 import async from 'async';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import path from 'path';
 
 const app = express();
 
 app.set('view engine', 'pug');
-app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 3000));
 
 app.set('views', `${__dirname}/public/views`);
-app.use('/', express.static(`${__dirname}/public`));
+app.use('/', express.static(path.join(__dirname, '../public')));
 app.use(parser.json());
 app.use(parser.urlencoded({
   extended: true,
@@ -21,7 +22,7 @@ app.use(parser.urlencoded({
 app.use(cookieParser());
 app.use(session({secret: '1231923871sdflskjflsjflsdk'}));
 
-api.start();
+// api.start();
 
 app.get('/home', (req, res) => {
   let driverRequests;
@@ -52,9 +53,9 @@ app.get('/home', (req, res) => {
   });
 });
 
-app.get('/', (req, res) => {
-  res.render('login.pug');
-});
+// app.get('/', (req, res) => {
+//   res.sendFile('index.html');
+// });
 
 app.post('/login', (req, res) => {
   async.waterfall([
@@ -167,5 +168,5 @@ app.post('/drivers', (req, res) => {
 
 
 app.listen(app.get('port'), () => {
-  console.log('Node app is running on port', app.get('port'));
+  console.log('Server started: http://localhost:' + app.get('port') + '/');
 });
