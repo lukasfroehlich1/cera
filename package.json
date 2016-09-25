@@ -5,10 +5,8 @@
   "main": "",
   "scripts": {
     "build": "babel app --out-dir dist && babel src --out-dir lib && webpack ./lib/entry.js ./public/scripts/index.js",
-    "test-app": "./node_modules/.bin/mocha app/test/**/*.js",
-    "test-react": "npm run build && npm run lint-react && ./node_modules/.bin/mocha lib/test/**/*.js",
-    "lint-app": "eslint app/**",
-    "lint-react": "eslint src/**",
+    "test": "npm run build && npm run lint && ./node_modules/.bin/mocha app/test/**/*.js lib/test/**/*.js",
+    "lint": "eslint app/** src/**",
     "clean": "rm -rf node_modules && npm install",
     "start": "npm run build && node ./dist/index.js"
   },
