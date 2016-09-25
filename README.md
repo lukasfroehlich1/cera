@@ -9,4 +9,4 @@ Clone this repository and then run:
 In order to start the server locally run:  
 `npm run start`  
 # Development
-To find appropriate scripts for testing, linting, building, etc look at `package.json`.  
+To find appropriate scripts for testing, linting, building, etc look at `package.json`. We will eventually split up the repo.
